@@ -1,6 +1,5 @@
 # kelompok-B1-14
-Senior Project
-
+Senior Project Kelompok 14
 
 
 Ketua Kelompok:
