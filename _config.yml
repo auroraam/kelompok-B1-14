@@ -1,5 +1,5 @@
 theme: minima
-title: Smartsched
+title: "Smartsched"
 description: Aplikasi manajemen tugas berbasis AI yang secara otomatis menyusun prioritas tugas berdasarkan deadline, tingkat kesulitan, dan kompleksitas tugas
 sass:
   style: compressed
