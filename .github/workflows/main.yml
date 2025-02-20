@@ -4,59 +4,39 @@ on:
   push:
     branches: [main]
 
-jobs:
+jobs: 
   test-build:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [16.x]
-
+        node-version: [18.x]
     steps:
       - uses: actions/checkout@v2
-      - name: Testing Build pre-Deploy
+
+      - name: Setup Node.js Environment
         uses: actions/setup-node@v2
-        with: 
+        with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: npm i
-      - run: npm run build
+          cache-dependency-path: package-lock.json  # Tidak ada folder khusus, langsung gunakan package-lock.json utama
 
-  deploy:
-    needs: test-build
-    runs-on: ubuntu-latest
+      - name: Install Dependencies
+        run: npm install
 
-    strategy:
-      matrix:
-        node-version: [16.x]
+      - name: Build Project
+        run: npm run build  # Jalankan build, baik untuk Next.js atau proyek lain
 
-    steps:
-      - name: Build app on VM
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }} 
-          port: ${{ secrets.PORT }}
-          script: |
-            echo "Cek folder project";
-            [ ! -d "${HOME}/repos/KELOMPOK-B1-14/" ] &&
-              {
-                echo "Repository belum di-clone. Cloning...";
-                mkdir -p ~/repos;
-                cd ~/repos;
-                git clone https://github.com/auroraam/KELOMPOK-B1-14;
-                cd ~/repos/KELOMPOK-B1-14;
-                echo "Install Package dan Build Project";
-                npm install;
-                npm run build;
-              } ||
-              {
-                echo "Repository sudah ada. Building....";
-                cd ~/repos/KELOMPOK-B1-14;
-                git restore .;
-                git pull origin main;
-                echo "Install Package dan Build Project";
-                npm install;
-                npm run build;
-              }
+      - name: Start Server for Testing
+        run: |
+          node server.js &  # Jalankan server di background
+          SERVER_PID=$!
+
+          # Tunggu server berjalan maksimal 10 detik
+          for i in {1..10}; do
+            curl -I http://localhost:3000 && break
+            echo "Waiting for server..."
+            sleep 2
+          done
+
+          # Matikan server setelah selesai testing
+          kill $SERVER_PID
