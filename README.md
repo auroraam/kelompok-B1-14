@@ -78,6 +78,7 @@ SmartSched bertujuan untuk membantu pengguna mengelola tugas, jadwal, dan priori
 ---
 
 ## 📊 Use Case Diagram
+![use case senpro](https://github.com/user-attachments/assets/92b1476e-4414-4c20-9759-d5648e216a32)
 
 ---
 
@@ -93,11 +94,14 @@ SmartSched bertujuan untuk membantu pengguna mengelola tugas, jadwal, dan priori
 ---
 
 ## 🔗 Entity Relationship Diagram (ERD)
+![erd senpro](https://github.com/user-attachments/assets/8f9b1a95-4774-4557-90e1-089f36450655)
 
 ---
 
 ## 📚 Low-Fidelity Wireframe
+![image](https://github.com/user-attachments/assets/8ee284dc-8960-46fb-81e7-600542cf6773)
 
 ---
 
 ## 📆 Gantt-Chart
+![gantt chart senpro](https://github.com/user-attachments/assets/1480d4c3-a31f-4d12-8d80-d76a2e374b7b)
