@@ -1,8 +1,8 @@
-# 🚀 *SmartSched* by Task14 - AI-Powered Task Manager 🚀
+# 🚀 *SmartSched* by Task14 🚀
 
 ## Tim Pengembang
 ### Ketua Kelompok
-- **Gavind Muhammad Pramahita** - NIM
+- **Gavind Muhammad Pramahita** - 22/497221/TK/54484
 
 ### Anggota
 - **Aurora Ma'isyah** - 22/493640/TK/54088
@@ -40,3 +40,9 @@ Aplikasi yang memungkinkan pengguna memasukkan tugas dengan deadline, lalu AI ak
 ---
 
 ## 📑 Analisis kompetitor
+
+| **Nama Aplikasi**   | **Jenis Kompetitor**    | **Jenis Produk**  | ***Target Customer***      | **Kelebihan**                                     | **Kekurangan**                                       | ***Key Competitive Advantage & Unique Value***                                 |
+|---------------------|------------------------|------------------|--------------------------|---------------------------------------------------|---------------------------------------------------|---------------------------------------------------------|
+| **Todoist**        | *Direct Competitor*    | Aplikasi manajemen tugas berbasis web dan mobile     | Orang yang membutuhkan manajemen tugas harian, termasuk mahasiswa, pekerja profesional, dan tim kecil    | - UI/UX yang intuitif dan mudah digunakan<br>- Bisa mengelola tugas dengan sistem proyek<br>- Sinkronisasi lintas perangkat           | - Tidak memiliki fitur AI untuk memprioritaskan tugas otomatis<br>- Banyak fitur premium yang berbayar<br>- Tidak ada analisis tugas berbasis AI         | *Smartsched* memiliki fitur AI-powered task prioritization, yaitu fitur yang secara otomatis menyesuaikan jadwal berdasarkan tingkat urgensi serta kompleksitas tugas yang belum ada di Todoist  |
+| **Microsoft To-Do**| *Direct Competitor*    | Aplikasi manajemen tugas yang terintegrasi dengan Microsoft Office     | Individu & Profesional yang membutuhkan aplikasi manajemen tugas yang terintegrasi dengan ekosistem Microsoft Office    | - Gratis dan terintegrasi dengan ekosistem Microsoft<br>- Bisa membuat daftar tugas yang mudah dipersonalisasi<br>- Tampilan sederhana dan ringan        | - Tidak memiliki fitur AI yang memprioritaskan tugas<br>- Tidak ada fitur otomatisasi cerdas untuk jadwal<br>- Tidak terlalu fleksibel untuk manajemen tugas tingkat lanjut         | *Smartsched* menggunakan AI untuk memberikan saran prioritas tugas yang belum dimiliki Microsoft To Do         |
+| **Trello**        | *InDirect Competitor*       | Aplikasi manajemen proyek berbasis papan Kanban     | Tim kerja, startup, dan individu yang ingin mengelola proyek secara visual         | - Fleksibel dan dapat digunakan dalam banyak skenario (kerja tim, proyek, dll)<br>- Bisa menambahkan berbagai integrasi seperti Slack dan Google Drive<br>- Cocok untuk kolaborasi tim         | - Tidak ideal untuk manajemen tugas pribadi yang sederhana<br>- Tidak ada fitur AI untuk membantu mengatur tugas otomatis<br>- Kurang cocok untuk pengguna individu yang hanya butuh daftar tugas sederhana        | *Smartsched* lebih fokus pada manajemen tugas harian pribadi dengan AI, bukan berbasis proyek besar seperti Trello    |
