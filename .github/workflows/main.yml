@@ -36,11 +36,9 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }} 
           port: ${{ secrets.PORT }}
           script: |
-            eval "$( ssh-agent -s)"
-            ssh-add ~/.ssh/ssh-praktikan56
             echo "Cek folder project";
             [ ! -d "${HOME}/repos/KELOMPOK-B1-14/" ] &&
               {
