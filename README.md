@@ -1,5 +1,3 @@
-# 🚀 *SmartSched* by Task14 🚀
-
 ## Tim Pengembang
 ### Ketua Kelompok
 - **Gavind Muhammad Pramahita** - 22/497221/TK/54484
@@ -13,7 +11,7 @@
 
 ---
 
-## Nama Produk: *SmartSched*
+## Nama Produk: 🚀 ***SmartSched*** 🚀
 ### Jenis produk
 ***SmartSched*** adalah **aplikasi manajemen tugas berbasis AI** yang secara otomatis menyusun prioritas tugas berdasarkan deadline, tingkat kesulitan, dan kompleksitas tugas. Dengan pendekatan berbasis kecerdasan buatan, SmartSched membantu pengguna mengelola waktu secara lebih efisien dan mengurangi stres akibat tugas yang menumpuk.
 
