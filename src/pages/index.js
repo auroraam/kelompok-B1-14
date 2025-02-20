@@ -23,9 +23,9 @@ export default function Home() {
         </div>
 
         <div className={styles.center}>
-          <h1 className={inter.className}>
+          {/* <h1 className={inter.className}>
             Senior Project 2023 | Lab Informatika
-          </h1>
+          </h1> */}
         </div>
 
         <div>
