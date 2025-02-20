@@ -1,4 +1,4 @@
-# 🚀 *SmartSched* by Task14 🚀
+# *SmartSched* by Task14
 
 ## Tim Pengembang
 ### Ketua Kelompok
