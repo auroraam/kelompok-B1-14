@@ -34,9 +34,11 @@ jobs:
       - name: Build app on VM
         uses: appleboy/ssh-action@master
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      - run: |
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          SCRIPT: |
             echo "Cek folder project";
             [ ! -d "${HOME}/repos/KELOMPOK-B1-14/" ] &&
               {
