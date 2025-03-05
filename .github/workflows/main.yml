@@ -1,4 +1,4 @@
-name: Test, Build Senpro B1-14
+name: Test, Build SmartSched
 
 on:
   push:
@@ -13,21 +13,26 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Node.js Environment
+      - name: Testing Frontend
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-          cache-dependency-path: package-lock.json  # Tidak ada folder khusus, langsung gunakan package-lock.json utama
+          cache-dependency-path: frontend/package-lock.json 
+      - run: |
+          cd frontend
+          npm install
+          npm run build
 
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build Project
-        run: npm run build  # Jalankan build, baik untuk Next.js atau proyek lain
-
-      - name: Start Server for Testing
-        run: |
+      - name: Testing Backend
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json 
+      - run: |
+          cd backend
+          npm install
           node server.js &  # Jalankan server di background
           SERVER_PID=$!
 
