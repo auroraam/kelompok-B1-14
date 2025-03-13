@@ -16,7 +16,7 @@ export default function Navbar() {
 
                     <div>
                         <Link
-                        href="/auth"
+                        href="/sign-in"
                         className="bg-[var(--primary-color)] font-normal text-white px-6 py-2 rounded-full hover:bg-[var(--secondary-color)] transition"
                         >
                         Sign In or Sign Up
