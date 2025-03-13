@@ -39,7 +39,7 @@ export default function Home() {
 
           <div className="mt-4">
             <Link
-            href="/auth"
+            href="/sign-in"
             className="bg-[var(--primary-color)] font-normal text-white px-6 py-2 rounded-full hover:bg-[var(--secondary-color)] transition"
             >
             Get Started Now!
@@ -67,7 +67,7 @@ export default function Home() {
             
             <div className="mt-6">
               <Link
-              href="/auth"
+              href="/sign-in"
               className="bg-[var(--primary-color)] font-normal text-white px-6 py-2 rounded-full hover:bg-[var(--secondary-color)] transition"
               >
               Log In Now
