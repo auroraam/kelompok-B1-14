@@ -11,7 +11,7 @@ export default function SignUp() {
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Background Biru Fullscreen */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-300 z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--primary-color)] to-[var(--secondary-color)] z-0" />
 
       {/* Card Form di Atas Background */}
       <div className="relative z-10 flex min-h-screen">
@@ -32,7 +32,7 @@ export default function SignUp() {
         <div className="flex-1 flex justify-center items-center">
           <div className="justify-center flex flex-col h-full w-[40vw] bg-white rounded-l-3xl shadow-lg p-10">
             <div className="items-center ">
-              <h2 className="text-3xl font-bold text-blue-600 mb-3">Create an Account</h2>
+              <h2 className="text-3xl font-bold primary-text mb-3">Create an Account</h2>
               <p className="text-gray-500 mb-3">
                 Start your journey with us! Smartly adjust your schedule now by using Smartsched.
               </p>
@@ -47,7 +47,7 @@ export default function SignUp() {
                     id="email"
                     type="text"
                     placeholder="e.g. youremail@mail.abc.com"
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -59,7 +59,7 @@ export default function SignUp() {
                     id="username"
                     type="text"
                     placeholder="e.g. JohnDoe123"
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />                  
                 </div>
 
@@ -71,7 +71,7 @@ export default function SignUp() {
                     id="name"
                     type="text"
                     placeholder="e.g. Johnny Doe"
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />                  
                 </div>
 
@@ -84,25 +84,25 @@ export default function SignUp() {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="*******"
-                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-5000"
                   />
                   <button
                     type="button"
-                    className="absolute right-4 top-10 text-gray-500"
+                    className="absolute right-4 top-12 text-gray-500"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
 
-                <p className='text-blue-600 text-bold mb-2'>
+                <p className='primary-text text-bold mb-2'>
                   Step 1 of 2
                 </p>
 
                 {/* Tombol Sign In */}
                 <button
                   type="submit"
-                  className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition"
+                  className="w-full gradient-button-2 p-3 rounded-lg"
                 >
                   Sign Up
                 </button>
@@ -111,7 +111,7 @@ export default function SignUp() {
               {/* Link ke Sign Up */}
               <p className="mt-6 text-bold text-gray-600">
                 Already have an account?{' '}
-                <Link href="/sign-in" className="text-blue-600 hover:underline">
+                <Link href="/sign-in" className="primary-text hover:underline">
                   Login
                 </Link>
               </p>
