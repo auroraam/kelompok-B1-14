@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3500;
 
 app.get("/", (req, res) => {
   res.json({ message: "Landing Page" });
