@@ -14,14 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # 🔹 Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
 
-      # 🔹 Install dan Jalankan Backend
       - name: Install & Start Backend
         run: |
           cd backend
@@ -29,7 +27,6 @@ jobs:
           node server.js &  # Jalankan di background
           echo "BACKEND_PID=$!" >> $GITHUB_ENV  # Simpan PID backend
 
-      # 🔹 Tunggu Backend Siap
       - name: Wait for Backend
         run: |
           for i in {1..10}; do
@@ -38,7 +35,6 @@ jobs:
             sleep 2
           done
 
-      # 🔹 Install dan Jalankan Frontend
       - name: Install & Start Frontend
         run: |
           cd frontend
@@ -46,7 +42,6 @@ jobs:
           npm run dev &  # Jalankan di background
           echo "FRONTEND_PID=$!" >> $GITHUB_ENV  # Simpan PID frontend
 
-      # 🔹 Tunggu Frontend Siap
       - name: Wait for Frontend
         run: |
           for i in {1..10}; do
@@ -55,7 +50,6 @@ jobs:
             sleep 2
           done
 
-      # 🔹 Matikan Backend dan Frontend setelah testing
       - name: Stop Backend & Frontend
         run: |
           echo "Stopping Backend (PID: $BACKEND_PID) & Frontend (PID: $FRONTEND_PID)"
