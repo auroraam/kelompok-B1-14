@@ -12,6 +12,10 @@
 
   --primary-color: #2592F2;
   --secondary-color: #7CCCFE;
+  --red-one: #F65B57;
+  --red-two: #FF7875;
+  --orange-one: #FFAC4B;
+  --green-one: #02A75A;
 }
 
 @theme inline {
@@ -32,4 +36,22 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+@layer utilities {
+  .gradient-text {
+    @apply bg-gradient-to-b from-[var(--primary-color)] to-[var(--secondary-color)] text-transparent bg-clip-text;
+  }
+  .primary-text {
+    @apply text-[var(--primary-color)]
+  }
+  .secondary-text {
+    @apply text-[var(--secondary-color)]
+  }
+  .gradient-button {
+    @apply bg-[var(--primary-color)] text-white rounded-full hover:bg-[var(--secondary-color)] transition
+  }
+  .gradient-button-2 {
+    @apply bg-[var(--primary-color)] text-white hover:bg-[var(--secondary-color)] transition
+  }
 }

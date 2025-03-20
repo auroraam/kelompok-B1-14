@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import Landing from "@/components/Landing";
+import TaskCard from "@/components/Task-card";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -58,19 +58,53 @@ export default function Home() {
 
           <div>
             <h2 className="text-3xl font-bold gradient-text">
-              To Unlock This List, <br /> You Should Login First
+              Here Is Your To Do List
             </h2>
             
             <p className="text-black mt-3">
-              Try logging in firsthand to experience our AI-driven priority-deciding system!
+              Goodluck! We know you could do this
             </p>
             
-            <div className="mt-6">
+            <div className="flex flex-col items-center mt-3">
+              <div>
+                <h3 className="bg-[var(--primary-color)] text-white rounded-full px-2 py-1 inline-block mb-2">
+                  Due Today
+                </h3>
+
+                <TaskCard
+                  title="Task One"
+                  description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
+                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
+                  consequat."
+                  priority="High"
+                  imageUrl="/image (8).png" // Ganti dengan path gambarmu
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center mt-3">
+              <div>
+                <h3 className="bg-[var(--primary-color)] text-white rounded-full px-2 py-1 inline-block mb-2">
+                  Due Tomorrow
+                </h3>
+
+                <TaskCard
+                  title="Task Two"
+                  description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
+                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
+                  consequat."
+                  priority="High"
+                  imageUrl="/image (8).png" // Ganti dengan path gambarmu
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 flex">
               <Link
-              href="/sign-in"
-              className="gradient-button font-normal px-6 py-2"
+              href="/tasks"
+              className="gradient-button font-normal px-6 py-2 ml-auto"
               >
-              Log In Now
+              Check All of My To-Do List
               </Link>
             </div>
           </div>

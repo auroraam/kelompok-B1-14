@@ -5,11 +5,11 @@ export default function Navbar() {
     return(
         <nav className="fixed top-0 left-0 w-full z-50 bg-white shadow-md">
             <div className="w-full flex py-4 px-25 justify-between items-center font-inter">
-                <div className="text-2xl font-bold bg-gradient-to-b from-[var(--primary-color)] to-[var(--secondary-color)] text-transparent bg-clip-text">
+                <div className="text-2xl font-bold gradient-text">
                     <Link href="/">SmartSched</Link>
                 </div>
 
-                <div className="flex gap-5 font-semibold text-[var(--primary-color)]">
+                <div className="flex gap-5 font-semibold primary-text">
                     <Link href="/">Home</Link>
                     <Link href="/tasks">Tasks</Link>
                     <Link href="/settings">Settings</Link>
@@ -17,7 +17,7 @@ export default function Navbar() {
                     <div>
                         <Link
                         href="/sign-in"
-                        className="bg-[var(--primary-color)] font-normal text-white px-6 py-2 rounded-full hover:bg-[var(--secondary-color)] transition"
+                        className="gradient-button font-normal px-6 py-2"
                         >
                         Sign In or Sign Up
                         </Link>
