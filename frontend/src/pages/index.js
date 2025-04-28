@@ -24,17 +24,12 @@ export default function Home() {
         <div className="max-w-5xl py-30 px-25">
             <h1 className="text-5xl text-stroke-white-200 font-extrabold gradient-text"
               >
-              SmartSched, Schedule with Care!
+              Your AI-Powered Task Manager for Maximum Efficiency
             </h1>
 
           <p className="flex text-justify mt-4 text-lg leading-relaxed text-white">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim 
-          ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut 
-          aliquip ex ea commodo consequat. Duis aute irure dolor in 
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa 
-          qui officia deserunt mollit anim id est laborum.
+          Struggling with deadlines? Overwhelmed by your to-do list? SmartSched is here to revolutionize the way you manage your time. Powered by AI, our smart task manager helps you prioritize, organize, and optimize your daily tasks effortlessly.
+          Start focusing on what truly matters—let SmartSched handle the rest!
           </p>
 
           <div className="mt-4">
@@ -96,22 +91,25 @@ export default function Home() {
             </h2>
             
             <p className="text-white mt-3 text-justify">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
-            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-            culpa qui officia deserunt mollit anim id est laborum.
+            SmartSched is an AI-driven task management platform designed to help students, 
+            professionals, and teams stay ahead of their schedules. Whether you are managing 
+            assignments, work projects, or daily tasks, SmartSched analyzes deadlines, urgency, 
+            and workload to provide a smart, efficient, and personalized scheduling experience.
             </p>
+            <h2 className="text-3xl font-bold text-white">
+              Who Is SmartSched For?
+            </h2>
 
             <p className="text-white mt-2 text-justify">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
-            nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-            culpa qui officia deserunt mollit anim id est laborum.
+            Students – Organize assignments, exams, and projects easily
             </p>
+            <p className="text-white mt-2 text-justify">
+            Professionals – Manage work tasks, meetings, and deadlines
+            </p>
+            <p className="text-white mt-2 text-justify">
+            Teams – Collaborate on projects and share schedules
+            </p>
+
           </div>
           
           <div className="aspect-square w-full h-[45vh] relative">

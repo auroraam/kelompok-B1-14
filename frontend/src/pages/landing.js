@@ -7,7 +7,6 @@ export default function Home() {
   return (
     <main className="pt-15">
       <Navbar />
-
       <div className="relative w-full h-[90vh] flex text-white">
         <div className="inset-0 -z-10">
           <Image
@@ -20,7 +19,6 @@ export default function Home() {
           />
           <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-white via-transparent to-transparent"></div>
         </div>
-
         <div className="max-w-5xl py-30 px-25">
             <h1 className="text-5xl text-stroke-white-200 font-extrabold gradient-text"
               >
@@ -28,13 +26,8 @@ export default function Home() {
             </h1>
 
           <p className="flex text-justify mt-4 text-lg leading-relaxed text-white">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim 
-          ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut 
-          aliquip ex ea commodo consequat. Duis aute irure dolor in 
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa 
-          qui officia deserunt mollit anim id est laborum.
+          Struggling with deadlines? Overwhelmed by your to-do list? SmartSched is here to revolutionize the way you manage your time. Powered by AI, our smart task manager helps you prioritize, organize, and optimize your daily tasks effortlessly.
+          Start focusing on what truly matters—let SmartSched handle the rest!
           </p>
 
           <div className="mt-4">
