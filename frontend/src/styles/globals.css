@@ -55,3 +55,5 @@ body {
     @apply bg-[var(--primary-color)] text-white hover:bg-[var(--secondary-color)] transition
   }
 }
+
+

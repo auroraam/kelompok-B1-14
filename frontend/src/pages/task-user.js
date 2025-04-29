@@ -4,13 +4,47 @@ import Image from "next/image";
 import { FaSearch } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import TaskCard2 from "@/components/Task-card-2";
+import { useState } from "react";
+import CreateTaskModal from "@/components/CreateTaskModal";
+import TaskCard from "@/components/Task-card";
 
 export default function Home() {
+	
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const user = {
+		name: "Jane Doe",
+		avatarUrl: "/images/profile.jpg" }
+	const [taskStatus, setTaskStatus] = useState(null); // null | "loading" | "success" | "error"
+		
+	// Simulate task creation process
+	const createTask = async () => {
+		setTaskStatus("loading");
+	
+		try {
+		  // Simulate API call delay
+		  await new Promise((resolve) => setTimeout(resolve, 3000));
+	
+		  // Simulate success response
+		  setTaskStatus("success");
+		} catch (error) {
+		  setTaskStatus("error");
+		}
+	  };
+	
+	  const handleClose = () => {
+		setTaskStatus(null);
+	  };
+	
+	  const handleRetry = () => {
+		createTask();
+	  };
+	  
 	return (
+		
 		<main className="pt-15">
-			<Navbar />
+			<Navbar user={user}/>
 
-			<div className="relative w-full h-[50vh] flex text-white">
+			<div className="relative w-full h-80 flex text-white">
 				<div className="inset-0 -z-10">
 					<Image
 						src="/image (1).jpeg"
@@ -46,7 +80,7 @@ export default function Home() {
 						<IoIosArrowDown className="text-blue-400 ml-2" />
 					</div>
 
-					<button className="flex-1 gradient-button font-normal px-6 py-2 min-h-full">
+					<button className="flex-1 gradient-button font-normal px-6 py-2 min-h-full" onClick={() => setIsModalOpen(true)}>
 						Create A Task Now
 					</button>
 				</div>
@@ -220,6 +254,7 @@ export default function Home() {
 					<span className="font-bold">SmartSched,</span> Your Partner for Every Scheduling Needs
 				</div>
 			</div>
+			<CreateTaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
 		</main>
 	);
 }

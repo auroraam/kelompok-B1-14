@@ -4,9 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function Home() {
+  const user = {
+    name: "Jane Doe",
+    avatarUrl: "/images/profile.jpg" }
+
   return (
     <main className="pt-15">
-      <Navbar />
+      <Navbar user={user} />
       <div className="relative w-full h-[90vh] flex text-white">
         <div className="inset-0 -z-10">
           <Image

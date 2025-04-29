@@ -3,9 +3,12 @@ import Image from "next/image";
 
 
 export default function Home() {
+  const user = {
+    name: "Jane Doe",
+    avatarUrl: "/images/profile.jpg" }
   return (
-    <main>
-      <Navbar />
+    <main className="pt-15">
+      <Navbar user={user} />
       <div class="self-stretch h-80 relative bg-white border-t border-sky-400 overflow-hidden">
     <div class="w-0 h-[2124px] left-[-50px] top-[-70.94px] absolute origin-top-left -rotate-90 bg-gradient-to-r from-black to-black/0"></div>
                 <Image
@@ -27,8 +30,8 @@ export default function Home() {
     {/* Profile Section */}
       <div class="self-stretch h-[905px] px-25 py-7 bg-white inline-flex flex-col justify-start items-start gap-5">
           <div class="w-[1520px] inline-flex justify-between items-center">
-        <div class="w-56 justify-center text-sky-400 text-3xl font-bold font-['Poppins'] leading-loose">Profile Name</div>
-        <div class="w-[479.80px] justify-start"><span class="text-zinc-900 text-sm font-normal font-['Work_Sans'] leading-tight">Joined at </span><span class="text-zinc-900 text-sm font-bold font-['Work_Sans'] leading-tight">DD/MM/YYYY</span></div>
+        <div class="w-56 justify-center text-sky-400 text-3xl font-bold font-sans leading-loose">Profile Name</div>
+        <div class="w-[479.80px] justify-start"><span class="text-zinc-900 text-sm font-normal font-sans leading-tight">Joined at </span><span class="text-zinc-900 text-sm font-bold font-['Work_Sans'] leading-tight">DD/MM/YYYY</span></div>
         <img class="w-32 h-28 rounded-full shadow-[0px_4px_10px_0px_rgba(19,33,19,0.12)]" src="https://placehold.co/126x120" />
         <div class="w-28 h-28 rounded-full"></div>
         <div class="w-32 h-28 rounded-full shadow-[0px_4px_10px_0px_rgba(19,33,19,0.12)] border-4 border-blue-500"></div>
