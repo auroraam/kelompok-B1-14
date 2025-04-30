@@ -6,37 +6,38 @@ import { IoIosArrowDown } from "react-icons/io";
 import TaskCard2 from "@/components/Task-card-2";
 import { useState } from "react";
 import CreateTaskModal from "@/components/CreateTaskModal";
-import TaskCard from "@/components/Task-card";
+import TaskCardPopup from "@/components/Task-card";
 
 export default function Home() {
 	
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const user = {
 		name: "Jane Doe",
-		avatarUrl: "/images/profile.jpg" }
+		avatarUrl: "/profileimage.png" }
 	const [taskStatus, setTaskStatus] = useState(null); // null | "loading" | "success" | "error"
 		
 	// Simulate task creation process
-	const createTask = async () => {
+	const handleTaskSubmit = async (taskData) => {
 		setTaskStatus("loading");
 	
 		try {
-		  // Simulate API call delay
+		  // Replace with your real API call
 		  await new Promise((resolve) => setTimeout(resolve, 3000));
 	
-		  // Simulate success response
 		  setTaskStatus("success");
+		  setIsModalOpen(false);
 		} catch (error) {
 		  setTaskStatus("error");
 		}
 	  };
 	
-	  const handleClose = () => {
+	  const handleCloseStatus = () => {
 		setTaskStatus(null);
 	  };
 	
 	  const handleRetry = () => {
-		createTask();
+		setTaskStatus("loading");
+		// You can retry the API call here or re-open the create modal
 	  };
 	  
 	return (
@@ -44,7 +45,7 @@ export default function Home() {
 		<main className="pt-15">
 			<Navbar user={user}/>
 
-			<div className="relative w-full h-80 flex text-white">
+			<div className="relative w-full h-[30vh] flex text-white">
 				<div className="inset-0 -z-10">
 					<Image
 						src="/image (1).jpeg"
@@ -65,7 +66,7 @@ export default function Home() {
 			</div>
 
 			<div className="flex flex-col items-center justify-center bg-white p-5">
-				<div className="flex flex-wrap items-center items-stretch justify-center gap-4 w-full max-w-4xl mb-5">
+				<div className="flex flex-wrap items-center justify-center gap-4 w-full max-w-4xl mb-5">
 					<div className="flex flex-1 items-center border border-blue-400 rounded-full px-4 py-2 min-h-full">
 						<FaSearch className="text-blue-400 mr-2" />
 						<input
@@ -80,7 +81,7 @@ export default function Home() {
 						<IoIosArrowDown className="text-blue-400 ml-2" />
 					</div>
 
-					<button className="flex-1 gradient-button font-normal px-6 py-2 min-h-full" onClick={() => setIsModalOpen(true)}>
+					<button className="flex-1 gradient-button font-normal px-6 py-2 min-h-full" onClick={() => setIsModalOpen(true)} >
 						Create A Task Now
 					</button>
 				</div>
@@ -254,7 +255,18 @@ export default function Home() {
 					<span className="font-bold">SmartSched,</span> Your Partner for Every Scheduling Needs
 				</div>
 			</div>
-			<CreateTaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
+
+			<CreateTaskModal
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				onSubmit={handleTaskSubmit} // Pass submit handler to modal 
+				/>
+
+			<TaskCardPopup
+				status={taskStatus}
+				onClose={handleCloseStatus}
+				onRetry={handleRetry}
+      />
 		</main>
 	);
 }

@@ -59,8 +59,8 @@ export default function Navbar({ user }) {
 
               {/* Popup card */}
               {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg p-4 text-sm z-50">
-                  <p className="font-semibold mb-2">Hello, {user.name}!</p>
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-blue-400 rounded-md shadow-lg p-4 text-sm z-50">
+                  <p className="px-2 py-1 font-bold text-white bg-blue-400">Hello, {user.name}!</p>
                   <Link
                     href="/profile"
                     className="block px-2 py-1 hover:bg-gray-100 rounded"
@@ -80,7 +80,7 @@ export default function Navbar({ user }) {
                       setIsProfileOpen(false);
                       // Add your sign-out logic here
                     }}
-                    className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded mt-2 text-red-600"
+                    className="w-full text-left px-2 py-1 hover:bg-red-100 rounded mt-2 text-red-600"
                   >
                     Sign Out
                   </button>
