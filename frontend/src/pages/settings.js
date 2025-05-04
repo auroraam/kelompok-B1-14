@@ -104,72 +104,74 @@ export default function Home() {
       <hr className="border-stone-300 border-[1px] w-full max-w-[1520px] mx-auto" />
 
       {/* Account Details */}
-      <section className="max-w-[1520px] w-full mx-auto relative px-6 md:px-12 py-8">
+      <section className="max-w-[1520px] w-full mx-auto px-6 md:px-12 py-8 flex gap-12">
+  {/* Left side - Description */}
+      <div className="flex-1 max-w-[480px]">
         <h2 className="text-black text-xl font-bold font-['Inter'] leading-normal mb-2">
           Account Details
         </h2>
-        <p className="w-[480px] text-gray-500 text-sm font-normal font-['Inter'] leading-tight mb-6">
+        <p className="text-gray-700 text-sm font-normal font-['Inter'] leading-tight">
           This will edit your profile name, username, and password if you wish to do so!{" "}
           <strong>Note: If you can’t edit the field, please click the edit profile button beforehand.</strong>
         </p>
+      </div>
 
-        {/* Fields side by side */}
-        <div className="flex flex-wrap gap-6 max-w-[580px]">
-            <div className="flex-1 min-w-[180px]">
+{/* Right side - Form fields */}
+        <div className="flex-1 max-w-[580px] flex flex-col gap-6">
+            <div>
               <label className="block text-gray-500 text-sm font-semibold font-['Inter'] leading-tight mb-1">
                 Username
               </label>
               <input
                 type="text"
-                name="username"
                 placeholder="e.g. JohnDoe123"
                 disabled={!isEditing}
                 value={formData.username}
                 onChange={handleInputChange}
                 className={`w-full h-12 rounded-lg border px-3 font-normal font-['Inter'] leading-normal ${
-                  isEditing ? "border-gray-400 text-black" : "border-gray-400 text-gray-400"
+                  isEditing ? "border-blue-400 text-blue-400" : "border-gray-400 text-gray-400"
                 }`}
               />
             </div>
 
-            <div className="flex-1 min-w-[180px]">
-              <label className="block text-gray-500 text-sm font-semibold font-['Inter'] leading-tight mb-1">
-                Display Name
-              </label>
-              <input
-                type="text"
-                name="displayName"
-                placeholder="e.g. Johnny Doe"
-                disabled={!isEditing}
-                value={formData.displayName}
-                onChange={handleInputChange}
-                className={`w-full h-12 rounded-lg border px-3 font-normal font-['Inter'] leading-tight ${
-                  isEditing ? "border-gray-400 text-black" : "border-gray-400 text-gray-400"
-                }`}
-              />
-            </div>
+            <div>
+      <label className="block text-gray-500 text-sm font-semibold font-['Inter'] leading-tight mb-1">
+        Display Name
+      </label>
+      <input
+        type="text"
+        placeholder="e.g. Johnny Doe"
+        disabled={!isEditing}
+        value={formData.displayName}
+        onChange={handleInputChange}
+        className={`w-full h-12 rounded-lg border px-3 font-normal font-['Inter'] leading-tight ${
+          isEditing ? "border-blue-400 text-blue-400" : "border-gray-400 text-gray-400"
+        }`}
+      />
+    </div>
 
-            <div className="flex-1 min-w-[180px]">
-              <label className="block text-gray-500 text-sm font-semibold font-['Inter'] leading-tight mb-1">
-                Password
-              </label>
-              <div className="relative w-full h-12 rounded-lg border border-gray-400 overflow-hidden">
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  disabled={!isEditing}
-                  onChange={handleInputChange}
-                  className={`w-full h-full px-3 font-normal font-['Work_Sans'] leading-normal bg-transparent ${
-                    isEditing ? "text-black" : "text-gray-400"
-                  }`}
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  aria-label="Toggle password visibility"
-                  disabled={!isEditing}
-                >
+    <div>
+      <label className="block text-gray-500 text-sm font-semibold font-['Inter'] leading-tight mb-1">
+        Password
+      </label>
+      <div className={`relative w-full h-12 rounded-lg border overflow-hidden ${
+        isEditing ? "border-blue-400" : "border-gray-400"
+      }`}>
+        <input
+          type="password"
+          value={formData.password}
+          disabled={!isEditing}
+          onChange={handleInputChange}
+          className={`w-full h-full px-3 font-normal font-['Work_Sans'] leading-normal bg-transparent ${
+            isEditing ? "text-blue-400" : "text-gray-400"
+          }`}
+        />
+        <button
+          type="button"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+          aria-label="Toggle password visibility"
+          disabled={!isEditing}
+        >
                   {/* Eye icon */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -190,11 +192,11 @@ export default function Home() {
                       d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                     />
                   </svg>
-                </button>
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+</section>
 
         <hr className="border-stone-300 border-[1px] w-full max-w-[1520px] mx-auto" />
 
