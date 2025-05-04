@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
-export default function CreateTaskModal({ isOpen, onClose }) {
+export default function EditTaskModal({ isOpen, onClose, task, onSubmit }) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     title: "",
@@ -9,9 +9,23 @@ export default function CreateTaskModal({ isOpen, onClose }) {
     dueDate: "",
     category: "Housework",
     difficulty: "Hard",
-    subTasks: ["", ""], // start with two empty sub-tasks
+    subTasks: ["", ""],
   });
 
+  // Initialize form data when modal opens or task changes
+  useEffect(() => {
+    if (task && isOpen) {
+      setFormData({
+        title: task.title || "",
+        description: task.description || "",
+        dueDate: task.dueDate || "",
+        category: task.category || "Housework",
+        difficulty: task.difficulty || "Hard",
+        subTasks: task.subTasks && task.subTasks.length > 0 ? task.subTasks : ["", ""],
+      });
+      setStep(1);
+    }
+  }, [task, isOpen]);
 
   if (!isOpen) return null;
 
@@ -51,30 +65,29 @@ export default function CreateTaskModal({ isOpen, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Pass form data to parent handler
     onSubmit(formData);
   };
 
-  
   return (
     <>
       {/* Overlay */}
       <div className="fixed inset-0 bg-black opacity-30 z-40"></div>
 
-      {/*  */}
+      {/* Modal */}
       <div className="fixed inset-0 flex justify-center items-center z-50 p-12 overflow-auto">
         <div className="bg-white rounded-lg max-w-4xl w-full p-6 flex gap-6 border border-blue-400">
           {/* Left side - Illustration */}
           <div className="flex-1 flex flex-col justify-center items-center text-left">
-          <div className="mb-4">
-            <h2 className="text-3xl font-bold text-blue-400 mb-2">Add New Task</h2>
-            <p className="text-sm text-cyan-900 max-w-xs">
-              Welcome! Here, you will add the task you want to do. Then, we will try to adjust and give you recommendations based on the{" "}
-              <strong>sub-tasks available, due date, and task difficulty!</strong>
-            </p>
-          </div>
+            <div className="mb-4">
+              <h2 className="text-3xl font-bold text-blue-400 mb-2">
+                Edit Task
+              </h2>
+              <p className="text-sm text-cyan-900 max-w-xs">
+                Update your task details below. We will adjust recommendations based on your changes.
+              </p>
+            </div>
             <Image
-              src="/addtask.png" // Replace with your image path
+              src="/addtask.png"
               alt="Illustration"
               width={500}
               height={350}
@@ -83,11 +96,13 @@ export default function CreateTaskModal({ isOpen, onClose }) {
           </div>
 
           {/* Right side - Form */}
-          <form className="flex-1 flex flex-col gap-4" onSubmit={step === 1 ? handleNext : handleSubmit}>
+          <form
+            className="flex-1 flex flex-col gap-4"
+            onSubmit={step === 1 ? handleNext : handleSubmit}
+          >
             {step === 1 && (
               <>
- 
-               <label className="text-blue-400 font-semibold" htmlFor="title">
+                <label className="text-blue-400 font-semibold" htmlFor="title">
                   Task Title
                 </label>
                 <input
@@ -101,7 +116,10 @@ export default function CreateTaskModal({ isOpen, onClose }) {
                   required
                 />
 
-                <label className="text-blue-400 font-semibold" htmlFor="description">
+                <label
+                  className="text-blue-400 font-semibold"
+                  htmlFor="description"
+                >
                   Description
                 </label>
                 <textarea
@@ -129,28 +147,43 @@ export default function CreateTaskModal({ isOpen, onClose }) {
                 />
 
                 <fieldset>
-                  <legend className="text-blue-400 font-semibold mb-1">Category</legend>
+                  <legend className="text-blue-400 font-semibold mb-1">
+                    Category
+                  </legend>
                   <div className="flex gap-4 text-cyan-900">
-                    {["School/College Work", "Housework", "Miscellaneous"].map((cat) => (
-                      <label key={cat} className="flex items-center gap-1">
-                        <input
-                          type="radio"
-                          name="category"
-                          value={cat}
-                          checked={formData.category === cat}
-                          onChange={handleChange}
-                          className="accent-cyan-900"
-                        />
-                        <span className={formData.category === cat ? "text-cyan-900 font-semibold" : ""}>{cat}</span>
-                      </label>
-                    ))}
+                    {["School/College Work", "Housework", "Miscellaneous"].map(
+                      (cat) => (
+                        <label key={cat} className="flex items-center gap-1">
+                          <input
+                            type="radio"
+                            name="category"
+                            value={cat}
+                            checked={formData.category === cat}
+                            onChange={handleChange}
+                            className="accent-cyan-900"
+                          />
+                          <span
+                            className={
+                              formData.category === cat
+                                ? "text-cyan-900 font-semibold"
+                                : ""
+                            }
+                          >
+                            {cat}
+                          </span>
+                        </label>
+                      )
+                    )}
                   </div>
                 </fieldset>
 
                 <fieldset>
-                  <legend className="text-blue-400 font-semibold mb-1">Task Difficulty</legend>
+                  <legend className="text-blue-400 font-semibold mb-1">
+                    Task Difficulty
+                  </legend>
                   <p className="text-xs italic mb-2 text-cyan-900">
-                    *This will help us determine which task to recommend doing first.
+                    *This will help us determine which task to recommend doing
+                    first.
                   </p>
                   <div className="flex gap-4 text-cyan-900">
                     {["Easy", "Medium", "Hard"].map((level) => (
@@ -163,7 +196,15 @@ export default function CreateTaskModal({ isOpen, onClose }) {
                           onChange={handleChange}
                           className="accent-cyan-900"
                         />
-                        <span className={formData.difficulty === level ? "text-cyan-900 font-semibold" : ""}>{level}</span>
+                        <span
+                          className={
+                            formData.difficulty === level
+                              ? "text-cyan-900 font-semibold"
+                              : ""
+                          }
+                        >
+                          {level}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -172,7 +213,7 @@ export default function CreateTaskModal({ isOpen, onClose }) {
                 <div className="flex justify-between mt-4">
                   <button
                     type="submit"
-                    className="bg-blue-400 text-white px-6 py-2 rounded hover:bg-blue-00 transition"
+                    className="bg-blue-400 text-white px-6 py-2 rounded hover:bg-blue-600 transition"
                   >
                     Next
                   </button>
@@ -188,28 +229,37 @@ export default function CreateTaskModal({ isOpen, onClose }) {
                   </button>
                 </div>
 
-                <p className="text-sm mt-2 text-blue-400 font-semibold">Step 1 of 2</p>
+                <p className="text-sm mt-2 text-blue-400 font-semibold">
+                  Step 1 of 2
+                </p>
               </>
             )}
 
             {step === 2 && (
               <>
-                <h2 className="text-3xl font-bold text-blue-400 mb-2">Add New Task</h2>
+                <h2 className="text-3xl font-bold text-blue-400 mb-2">
+                  Edit Task
+                </h2>
                 <p className="text-sm mb-4 text-cyan-900">
-                  Welcome! Here, you will add the task you want to do. Then, we will try to adjust and give you recommendations based on the{" "}
-                  <strong>sub-tasks available, due date, and task difficulty!</strong>
+                  Update your task details below. We will adjust recommendations
+                  based on your changes.
                 </p>
 
                 {formData.subTasks.map((subTask, index) => (
                   <div key={index}>
-                    <label className="text-blue-400 font-semibold" htmlFor={`subTask-${index}`}>
+                    <label
+                      className="text-blue-400 font-semibold"
+                      htmlFor={`subTask-${index}`}
+                    >
                       Sub-Task {index + 1}
                     </label>
                     <input
                       id={`subTask-${index}`}
                       type="text"
                       value={subTask}
-                      onChange={(e) => handleSubTaskChange(index, e.target.value)}
+                      onChange={(e) =>
+                        handleSubTaskChange(index, e.target.value)
+                      }
                       className="border border-gray-400 rounded-md p-2 bg-slate-200 text-cyan-900 w-full"
                       placeholder={`Enter sub-task ${index + 1}`}
                       required
@@ -238,7 +288,7 @@ export default function CreateTaskModal({ isOpen, onClose }) {
                       type="submit"
                       className="bg-blue-400 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
                     >
-                      Add New Task
+                      Save Changes
                     </button>
                     <button
                       type="button"
@@ -253,7 +303,9 @@ export default function CreateTaskModal({ isOpen, onClose }) {
                   </div>
                 </div>
 
-                <p className="text-sm mt-2 text-blue-400 font-semibold">Step 2 of 2</p>
+                <p className="text-sm mt-2 text-blue-400 font-semibold">
+                  Step 2 of 2
+                </p>
               </>
             )}
           </form>

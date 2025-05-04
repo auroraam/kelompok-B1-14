@@ -6,9 +6,42 @@ import { IoIosArrowDown } from "react-icons/io";
 import TaskCard2 from "@/components/Task-card-2";
 import { useState } from "react";
 import CreateTaskModal from "@/components/CreateTaskModal";
-import TaskCardPopup from "@/components/Task-card";
+import EditTaskModal from "@/components/EditTaskModal";
+import TaskDeletePopUp from "@/components/TaskDeletePopUp";
 
 export default function Home() {
+
+	const [selectedTask, setSelectedTask] = useState(null);
+  
+	const tasks = [
+	  {
+		id: 1,
+		title: "Example Task",
+		description: "This is a sample task description.",
+		priority: "High",
+		imageUrl: "/image (8).png",
+		dueDate: "2024-05-10",
+		category: "Housework",
+		difficulty: "Hard",
+		subTasks: ["Subtask 1", "Subtask 2"],
+	  },
+	];
+  
+	const handleEditClick = (task) => {
+	  setSelectedTask(task);
+	  setIsModalOpen(true);
+	};
+  
+	const handleCloseModal = () => {
+	  setIsModalOpen(false);
+	  setSelectedTask(null);
+	};
+  
+	const handleSave = (updatedTask) => {
+	  console.log("Save updated task:", updatedTask);
+	  // Update your tasks state here accordingly
+	  handleCloseModal();
+	};
 	
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const user = {
@@ -39,9 +72,44 @@ export default function Home() {
 		setTaskStatus("loading");
 		// You can retry the API call here or re-open the create modal
 	  };
+
+	  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState(false);
+
+  const openDeletePopup = (task) => {
+    setTaskToDelete(task);
+    setDeletePopupOpen(true);
+    setDeleteError(false);
+  };
+
+  const closeDeletePopup = () => {
+    setDeletePopupOpen(false);
+    setTaskToDelete(null);
+    setDeleteLoading(false);
+    setDeleteError(false);
+  };
+
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+    setDeleteError(false);
+    try {
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Remove the task from the list
+      setTasks((prev) => prev.filter((t) => t.id !== taskToDelete.id));
+
+      closeDeletePopup();
+    } catch (error) {
+      setDeleteError(true);
+      setDeleteLoading(false);
+    }
+};
+
 	  
 	return (
-		
 		<main className="pt-15">
 			<Navbar user={user}/>
 
@@ -93,42 +161,26 @@ export default function Home() {
 								Urgent-Level Tasks
 							</h3>
 
-							<div className="flex flex-col mb-3">
+							<div className="flex flex-col mb-3 space-y-2">
+							{tasks.map((task) => (
+								<TaskCard2
+									key={task.id}s
+									{...task}
+									onEdit={() => handleEditClick(task)}
+									onDelete={() => openDeletePopup(task)}
+								/>
+								))}
+						
+								{isModalOpen && selectedTask && (
+								<EditTaskModal
+									isOpen={isModalOpen}
+									onClose={handleCloseModal}
+									task={selectedTask}
+									onSubmit={handleSave}
+								/>
+		)}
 								<TaskCard2
 									title="Task One"
-									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
-                  consequat."
-									priority="High"
-									imageUrl="/image (8).png" 
-								/>
-							</div>
-
-							<div className="flex flex-col mb-3">
-								<TaskCard2
-									title="Task Two"
-									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
-                  consequat."
-									priority="High"
-									imageUrl="/image (8).png" 
-								/>
-							</div>
-
-							<div className="flex flex-col mb-3">
-								<TaskCard2
-									title="Task Three"
-									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
-                  consequat."
-									priority="High"
-									imageUrl="/image (8).png" 
-								/>
-							</div>
-
-							<div className="flex flex-col mb-3">
-								<TaskCard2
-									title="Task Four"
 									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
 									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
                   consequat."
@@ -137,43 +189,11 @@ export default function Home() {
 								/>
 							</div>
 						</div>
+
 						<div>
 							<h3 className="bg-[var(--orange-one)] text-white rounded-full px-3 py-1 inline-block mb-3 mt-2">
 								Moderate-Level Tasks
 							</h3>
-
-							<div className="flex flex-col mb-3">
-								<TaskCard2
-									title="Task One"
-									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
-                  consequat."
-									priority="Medium"
-									imageUrl="/image (8).png" 
-								/>
-							</div>
-
-							<div className="flex flex-col mb-3">
-								<TaskCard2
-									title="Task Two"
-									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
-                  consequat."
-									priority="Medium"
-									imageUrl="/image (8).png" 
-								/>
-							</div>
-
-							<div className="flex flex-col mb-3">
-								<TaskCard2
-									title="Task Three"
-									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
-                  consequat."
-									priority="Medium"
-									imageUrl="/image (8).png" 
-								/>
-							</div>
 
 							<div className="flex flex-col mb-3">
 								<TaskCard2
@@ -194,39 +214,6 @@ export default function Home() {
 							<div className="flex flex-col mb-3">
 								<TaskCard2
 									title="Task One"
-									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
-                  consequat."
-									priority="Low"
-									imageUrl="/image (8).png" 
-								/>
-							</div>
-
-							<div className="flex flex-col mb-3">
-								<TaskCard2
-									title="Task Two"
-									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
-                  consequat."
-									priority="Low"
-									imageUrl="/image (8).png" 
-								/>
-							</div>
-
-							<div className="flex flex-col mb-3">
-								<TaskCard2
-									title="Task Three"
-									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
-									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
-                  consequat."
-									priority="Low"
-									imageUrl="/image (8).png" 
-								/>
-							</div>
-
-							<div className="flex flex-col mb-3">
-								<TaskCard2
-									title="Task Four"
 									description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
 									dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo 
                   consequat."
@@ -261,11 +248,12 @@ export default function Home() {
 				onClose={() => setIsModalOpen(false)}
 				onSubmit={handleTaskSubmit} // Pass submit handler to modal 
 				/>
-
-			<TaskCardPopup
-				status={taskStatus}
-				onClose={handleCloseStatus}
-				onRetry={handleRetry}
+			<TaskDeletePopUp
+        isOpen={deletePopupOpen}
+        onClose={closeDeletePopup}
+        onDelete={handleDelete}
+        loading={deleteLoading}
+        error={deleteError}
       />
 		</main>
 	);
