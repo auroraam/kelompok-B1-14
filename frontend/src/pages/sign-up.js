@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,15 +5,16 @@ import { Eye, EyeOff } from 'lucide-react';
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
+  const [activeCard, setActiveCard] = useState('fast-paced'); // default active card
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Background Biru Fullscreen */}
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[var(--primary-color)] to-[var(--secondary-color)] z-0" />
 
-      {/* Card Form di Atas Background */}
+      {/* Card Form */}
       <div className="relative z-10 flex min-h-screen">
-        {/* Bagian Kiri: Ilustrasi */}
+        {/* Left Illustration */}
         <div className="px-40 flex-1 flex flex-col justify-center text-white">
           <h1 className="text-5xl font-bold mb-2">SmartSched</h1>
           <p className="text-2xl">Schedule Smartly.</p>
@@ -28,7 +27,7 @@ export default function SignUp() {
           />
         </div>
 
-        {/* Bagian Kanan: Form Sign In */}
+        {/* Right Form */}
         <div className="flex-1 flex justify-center items-center">
           <div className="justify-center flex flex-col h-full w-[40vw] bg-white rounded-l-3xl shadow-lg p-10">
             <div className="items-center ">
@@ -38,7 +37,7 @@ export default function SignUp() {
               </p>
 
               <form>
-                {/* Input Username */}
+                {/* Email */}
                 <div className="mb-1">
                   <label htmlFor="email" className="block mb-2 text-gray-600">
                     Email Address
@@ -47,10 +46,11 @@ export default function SignUp() {
                     id="email"
                     type="text"
                     placeholder="e.g. youremail@mail.abc.com"
-                    className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 placeholder-gray-400 border border-gray-400 text-cyan-900 rounded-lg bg-white focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
+                {/* Username */}
                 <div className="mb-2 relative">
                   <label htmlFor="username" className="block mb-2 text-gray-600">
                     Username
@@ -59,10 +59,11 @@ export default function SignUp() {
                     id="username"
                     type="text"
                     placeholder="e.g. JohnDoe123"
-                    className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 placeholder-gray-400 border border-gray-400 text-cyan-900 rounded-lg bg-white focus:ring-2 focus:ring-blue-500"
                   />                  
                 </div>
 
+                {/* Display Name */}
                 <div className="mb-1 relative">
                   <label htmlFor="name" className="block mb-1 text-gray-600">
                     Display Name
@@ -71,11 +72,11 @@ export default function SignUp() {
                     id="name"
                     type="text"
                     placeholder="e.g. Johnny Doe"
-                    className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg text-cyan-900 bg-white focus:ring-2 focus:ring-blue-500"
                   />                  
                 </div>
 
-                {/* Input Password */}
+                {/* Password */}
                 <div className="mb-1 relative">
                   <label htmlFor="password" className="block mb-2 text-gray-600">
                     Password
@@ -84,7 +85,7 @@ export default function SignUp() {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="*******"
-                    className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-5000"
+                    className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg text-cyan-900 bg-white focus:ring-2 focus:ring-blue-500"
                   />
                   <button
                     type="button"
@@ -95,11 +96,53 @@ export default function SignUp() {
                   </button>
                 </div>
 
-                <p className='primary-text text-bold mb-2'>
-                  Step 1 of 2
-                </p>
+                <div className="mb-1 relative">
+                  <label htmlFor="password" className="block mb-2 text-gray-600">
+                    Task Prioritization
+                  </label>
+                </div>
+                {/* Cards container */}
+                <div className="flex gap-6 mb-6">
+                  {/* Leisure Card */}
+                  <div
+                    onClick={() => setActiveCard('leisure')}
+                    className={`flex flex-col items-center justify-center w-28 h-36 rounded-lg shadow-md p-4 cursor-pointer transition-colors duration-300
+                      ${activeCard === 'leisure' ? 'bg-blue-100 border-4 border-blue-300' : 'bg-gray-100 border border-transparent'}
+                    `}
+                  >
+                    <Image
+                      src="/leisure.png" // Replace with your actual coffee cup image path
+                      alt="Leisure"
+                      width={48}
+                      height={48}
+                      priority
+                    />
+                    <span className={`mt-3 font-semibold ${activeCard === 'leisure' ? 'text-blue-400' : 'text-gray-700'}`}>
+                      Leisure
+                    </span>
+                  </div>
 
-                {/* Tombol Sign In */}
+                  {/* Fast-Paced Card */}
+                  <div
+                    onClick={() => setActiveCard('fast-paced')}
+                    className={`flex flex-col items-center justify-center w-28 h-36 rounded-lg shadow-md p-4 cursor-pointer transition-colors duration-300
+                      ${activeCard === 'fast-paced' ? 'bg-blue-100 border-4 border-blue-300' : 'bg-gray-100 border border-transparent'}
+                    `}
+                  >
+                    <Image
+                      src="/fast-paced.png" // Replace with your actual clock image path
+                      alt="Fast-Paced"
+                      width={48}
+                      height={48}
+                      priority
+                    />
+                    <span className={`mt-3 font-semibold ${activeCard === 'fast-paced' ? 'text-blue-400' : 'text-gray-700'}`}>
+                      Speedrun
+                    </span>
+                  </div>
+                </div>
+
+                {/* Sign Up Button */}
                 <button
                   type="submit"
                   className="w-full gradient-button-2 p-3 rounded-lg"
@@ -108,7 +151,7 @@ export default function SignUp() {
                 </button>
               </form>
 
-              {/* Link ke Sign Up */}
+              {/* Login Link */}
               <p className="mt-6 text-bold text-gray-600">
                 Already have an account?{' '}
                 <Link href="/sign-in" className="primary-text hover:underline">
