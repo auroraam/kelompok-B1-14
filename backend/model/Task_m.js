@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const User = require('./User');
+const User = require('./User_m');
 
 const taskSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'User',
         required: true
     },
     title: {
@@ -15,17 +15,21 @@ const taskSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true,
         trim: true
     },
-    dueDate: {
+    deadline: {
         type: Date,
         required: true
     },
-    priorityLevel: {
+    difficulty: {
         type: String,
-        enum: ['low', 'medium', 'high'],
-        default: 'medium'
+        enum: ['Easy', 'Medium', 'Hard'],
+        default: 'Medium'
+    },
+    priority: {
+        type: String,
+        enum: ['Low', 'Medium', 'High'],
+        default: 'Medium'
     },
     status: {
         type: String,

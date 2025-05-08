@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const User = require('./User');
-const Task = require('./Task');
+const User = require('./User_m');
+const Task = require('./Task_m');
 
 const notificationSchema = new mongoose.Schema({
     userId: {
