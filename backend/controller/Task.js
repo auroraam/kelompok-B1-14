@@ -1,0 +1,121 @@
+const Task = require('../model/Task_m');
+const User = require('../model/User_m')
+const asyncHandler = require('express-async-handler');
+
+const createTask = asyncHandler(async (req, res) => {
+    try {
+        const { title, description, deadline, difficulty, priority, status } = req.body;
+
+        if (!title || !description || !deadline || !difficulty || !priority ) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        const userId = req.user.id;
+
+        const taskObject = {
+            userId,
+            title,
+            description,
+            deadline,
+            difficulty,
+            priority,
+            status
+        };
+
+        const task = await Task.create(taskObject);
+
+        if (task) {
+            return res.status(201).json({ message: 'Task created!', task });
+        } else {
+            return res.status(400).json({ message: 'Failed to create task!' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+});
+
+const getAllTask = asyncHandler(async (req, res) => {
+    try {
+        const tasks = await Task.find();
+        res.status(200).json({ tasks });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching tasks', error: error.message });
+    }
+});
+
+const getTaskByUserId = asyncHandler(async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const tasks = await Task.find({ userId });
+
+        if (!tasks.length) {
+            return res.status(404).json({ message: 'No tasks found for this user' });
+        }
+
+        res.status(200).json({ tasks });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user tasks', error: error.message });
+    }
+});
+
+const getTaskByTaskId = asyncHandler(async (req, res) => {
+    try {
+        const { taskId } = req.query;
+        const task = await Task.findById(taskId);
+
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        res.status(200).json({ task });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching task by ID', error: error.message });
+    }
+});
+
+// UPDATE TASK
+const updateTask = asyncHandler(async (req, res) => {
+    try {
+        const { taskId } = req.query;
+        const { title, description, deadline, difficulty, priority, status } = req.body;
+
+        const task = await Task.findById(taskId);
+
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        task.title = title || task.title;
+        task.description = description || task.description;
+        task.deadline = deadline || task.deadline;
+        task.difficulty = difficulty || task.difficulty;
+        task.priority = priority || task.priority;
+        task.status = status || task.status;
+
+        const updatedTask = await task.save();
+
+        res.status(200).json({ message: 'Task updated!', task: updatedTask });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating task', error: error.message });
+    }
+});
+
+// DELETE TASK
+const deleteTask = asyncHandler(async (req, res) => {
+    try {
+        const { taskId } = req.query;
+
+        const task = await Task.findById(taskId);
+
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        await Task.findByIdAndDelete(taskId);
+        res.status(200).json({ message: 'Task deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting task', error: error.message });
+    }
+});
+
+module.exports = { createTask, getAllTask, getTaskByTaskId, getTaskByUserId, updateTask, deleteTask };
