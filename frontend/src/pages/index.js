@@ -70,13 +70,6 @@ export default function Home() {
       >
         Get Started Now!
       </Link>
-
-      <button
-        onClick={() => setShowPopup(true)}
-        className="gradient-button font-normal px-6 py-2"
-      >
-        Test Pop Up
-      </button>
     </div>
   </div>
   {showPopup && (

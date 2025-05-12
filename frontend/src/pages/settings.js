@@ -203,31 +203,6 @@ export default function Home() {
 
         <hr className="border-stone-300 border-[1px] w-full max-w-[1520px] mx-auto" />
 
-        {/* Push Notifications */}
-        <section className="max-w-[1520px] w-full mx-auto flex justify-between items-center bg-white py-4 px-6 md:px-12">
-          <div className="w-[493px] flex flex-col gap-1">
-            <h3 className="text-black text-xl font-bold font-['Inter'] leading-loose">Push Notifications</h3>
-            <p className="text-gray-500 text-sm font-normal font-['Inter'] leading-tight">
-              This will allow our website to reach you via notifications to remind the task that you should be doing.
-            </p>
-          </div>
-
-          {/* Toggle Switch */}
-          <div
-            onClick={togglePush}
-            className={`relative w-20 h-7 rounded-3xl cursor-pointer transition-colors duration-300 ${
-              pushEnabled ? "bg-blue-400" : "bg-neutral-600"
-            }`}
-          >
-            <div
-              className={`absolute w-6 h-6 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ${
-                pushEnabled ? "translate-x-[13px]" : "translate-x-0"
-              }`}
-            />
-          </div>
-        </section>
-
-        <hr className="border-stone-300 border-[1px] w-full max-w-[1520px] mx-auto" />
 
         {/* Task Prioritization */}
         <section className="max-w-[1520px] w-full mx-auto flex justify-start items-start gap-[453px] bg-white py-4 px-6 md:px-12">

@@ -10,7 +10,7 @@ export default function TaskDeletePopUp({ isOpen, onClose, onDelete, loading, er
           {loading ? (
             <>
               <h2 className="text-2xl font-bold text-red-600 mb-4">Deleting Task...</h2>
-              <p className="mb-4">Please wait while we delete the task.</p>
+              <p className="mb-4 text-cyan-900">Please wait while we delete the task.</p>
               <div className="flex justify-center space-x-2">
                 {[...Array(5)].map((_, i) => (
                   <span
@@ -24,7 +24,7 @@ export default function TaskDeletePopUp({ isOpen, onClose, onDelete, loading, er
           ) : error ? (
             <>
               <h2 className="text-2xl font-bold text-red-600 mb-4">Delete Failed</h2>
-              <p className="mb-6 text-red-600">There was an error deleting the task. Please try again.</p>
+              <p className="mb-6 text-red-600 ">There was an error deleting the task. Please try again.</p>
               <button
                 onClick={onClose}
                 className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition"
@@ -35,7 +35,7 @@ export default function TaskDeletePopUp({ isOpen, onClose, onDelete, loading, er
           ) : (
             <>
               <h2 className="text-2xl font-bold text-red-600 mb-4">Confirm Delete</h2>
-              <p className="mb-6">Are you sure you want to delete this task? This action cannot be undone.</p>
+              <p className="mb-6 text-cyan-900">Are you sure you want to delete this task? This action cannot be undone.</p>
               <div className="flex justify-center gap-4">
                 <button
                   onClick={onClose}

@@ -1,7 +1,5 @@
 import Navbar from "@/components/Navbar";
-import Link from "next/link";
 import Image from "next/image";
-import { FaSearch } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import TaskCard2 from "@/components/Task-card-2";
 import { useState } from "react";
@@ -16,6 +14,8 @@ export default function Home() {
   // Separate state variables for create and edit modals
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [selectedSortOption, setSortSelectedOption] = useState(null);
 
   // Tasks list state (added setter to allow deletion)
   const [tasks, setTasks] = useState([
@@ -40,6 +40,7 @@ export default function Home() {
 
   // Task creation status
   const [taskStatus, setTaskStatus] = useState(null); // null | "loading" | "success" | "error"
+  const toggleDropdown = () => setIsSortOpen(!isSortOpen);
 
   // Delete popup states
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
@@ -135,6 +136,14 @@ export default function Home() {
     }
   };
 
+  const handleOptionClick = (option) => {
+    setSortSelectedOption(option);
+    setIsSortOpen(false);
+    if (onSortChange) onSortChange(option);
+  };
+
+  
+
   return (
     <main className="pt-15">
       <Navbar user={user} />
@@ -159,19 +168,46 @@ export default function Home() {
 
       <div className="flex flex-col items-center justify-center bg-white p-5">
         <div className="flex flex-wrap items-center justify-center gap-4 w-full max-w-4xl mb-5">
-          <div className="flex flex-1 items-center border border-blue-400 rounded-full px-4 py-2 min-h-full">
-            <FaSearch className="text-blue-400 mr-2" />
-            <input
-              type="text"
-              placeholder="Search Tasks Here"
-              className="outline-none bg-transparent text-blue-400 placeholder-blue-400 w-full"
-            />
-          </div>
+        <div className="relative inline-block text-left flex-1">
+  {/* Dropdown trigger */}
+  <div
+    className="flex justify-between items-center border border-blue-400 rounded-full px-4 py-2 cursor-pointer min-h-full w-full"
+    onClick={toggleDropdown}
+    role="button"
+    tabIndex={0}
+    onKeyDown={(e) => { if (e.key === 'Enter') toggleDropdown(); }}
+  >
+    <span className="text-blue-400">
+      {selectedSortOption === 'asc'
+        ? 'Date Ascending'
+        : selectedSortOption === 'desc'
+        ? 'Date Descending'
+        : 'Sort By'}
+    </span>
+    <IoIosArrowDown className="text-blue-400 ml-2" />
+  </div>
 
-          <div className="flex flex-1 items-center border border-blue-400 rounded-full px-4 py-2 cursor-pointer min-h-full">
-            <span className="text-blue-400">Sort By</span>
-            <IoIosArrowDown className="text-blue-400 ml-2" />
-          </div>
+  {/* Dropdown menu */}
+  {isSortOpen && (
+    <div className="absolute right-0 mt-2 w-full bg-white border border-blue-400 rounded-2xl shadow-lg z-10">
+      <ul className="py-1">
+        <li
+          className="px-4 py-2 text-blue-400 hover:bg-blue-50 cursor-pointer"
+          onClick={() => handleOptionClick('asc')}
+        >
+          Date Ascending
+        </li>
+        <li
+          className="px-4 py-2 text-blue-400 hover:bg-blue-50 cursor-pointer"
+          onClick={() => handleOptionClick('desc')}
+        >
+          Date Descending
+        </li>
+      </ul>
+    </div>
+  )}
+</div>
+
 
           <button
             className="flex-1 gradient-button font-normal px-6 py-2 min-h-full"
