@@ -7,9 +7,20 @@ import FeatureCard from "@/components/featureCard";
 import TaskCard2 from "@/components/Task-card-2";
 import EditTaskModal from "@/components/EditTaskModal";
 import TaskDeletePopUp from "@/components/TaskDeletePopUp";
+import { useEffect } from 'react';
+import { isAuthenticated } from '../auth';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const [showPopup, setShowPopup] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.replace('http://localhost:3000'); // redirect kalau belum login
+    }
+  }, []);
+
   const user = {
     name: "Jane Doe",
     avatarUrl: "/profileimage.png",
@@ -166,12 +177,12 @@ export default function Home() {
         Get Started Now!
       </Link>
 
-      <button
+      {/* <button
         onClick={() => setShowPopup(true)}
         className="gradient-button font-normal px-6 py-2"
       >
         Test Pop Up
-      </button>
+      </button> */}
     </div>
   </div>
   {showPopup && (

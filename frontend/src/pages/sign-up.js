@@ -2,10 +2,38 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
-  const [activeCard, setActiveCard] = useState('fast-paced'); // default active card
+  const [activeCard, setActiveCard] = useState('Speedrun'); // default active card
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [dname, setdname] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        // Kirim data login ke API route Next.js
+        const response = await axios.post('http://localhost:3500/user/', {
+          email, username, dname, passwordHash: password, prioritization: activeCard
+        });
+  
+        // Simpan token yang diterima di localStorage
+        const { token } = response.data;
+        router.push('http://localhost:3000/sign-in/');
+      } catch (error) {
+        if (error.response && error.response.data && error.response.data.message) {
+          setErrorMessage(error.response.data.message);
+        } else {
+          setErrorMessage('Terjadi kesalahan saat register.');
+        }
+      }
+    };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -36,7 +64,7 @@ export default function SignUp() {
                 Start your journey with us! Smartly adjust your schedule now by using Smartsched.
               </p>
 
-              <form>
+              <form onSubmit={handleSubmit}>
                 {/* Email */}
                 <div className="mb-1">
                   <label htmlFor="email" className="block mb-2 text-gray-600">
@@ -46,6 +74,8 @@ export default function SignUp() {
                     id="email"
                     type="text"
                     placeholder="e.g. youremail@mail.abc.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full p-3 placeholder-gray-400 border border-gray-400 text-cyan-900 rounded-lg bg-white focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -59,6 +89,8 @@ export default function SignUp() {
                     id="username"
                     type="text"
                     placeholder="e.g. JohnDoe123"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="w-full p-3 placeholder-gray-400 border border-gray-400 text-cyan-900 rounded-lg bg-white focus:ring-2 focus:ring-blue-500"
                   />                  
                 </div>
@@ -72,6 +104,8 @@ export default function SignUp() {
                     id="name"
                     type="text"
                     placeholder="e.g. Johnny Doe"
+                    value={dname}
+                    onChange={(e) => setdname(e.target.value)}
                     className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg text-cyan-900 bg-white focus:ring-2 focus:ring-blue-500"
                   />                  
                 </div>
@@ -85,6 +119,8 @@ export default function SignUp() {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="*******"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-lg text-cyan-900 bg-white focus:ring-2 focus:ring-blue-500"
                   />
                   <button
@@ -105,9 +141,9 @@ export default function SignUp() {
                 <div className="flex gap-6 mb-6">
                   {/* Leisure Card */}
                   <div
-                    onClick={() => setActiveCard('leisure')}
+                    onClick={() => setActiveCard('Leisure')}
                     className={`flex flex-col items-center justify-center w-28 h-36 rounded-lg shadow-md p-4 cursor-pointer transition-colors duration-300
-                      ${activeCard === 'leisure' ? 'bg-blue-100 border-4 border-blue-300' : 'bg-gray-100 border border-transparent'}
+                      ${activeCard === 'Leisure' ? 'bg-blue-100 border-4 border-blue-300' : 'bg-gray-100 border border-transparent'}
                     `}
                   >
                     <Image
@@ -117,16 +153,16 @@ export default function SignUp() {
                       height={48}
                       priority
                     />
-                    <span className={`mt-3 font-semibold ${activeCard === 'leisure' ? 'text-blue-400' : 'text-gray-700'}`}>
+                    <span className={`mt-3 font-semibold ${activeCard === 'Leisure' ? 'text-blue-400' : 'text-gray-700'}`}>
                       Leisure
                     </span>
                   </div>
 
                   {/* Fast-Paced Card */}
                   <div
-                    onClick={() => setActiveCard('fast-paced')}
+                    onClick={() => setActiveCard('Speedrun')}
                     className={`flex flex-col items-center justify-center w-28 h-36 rounded-lg shadow-md p-4 cursor-pointer transition-colors duration-300
-                      ${activeCard === 'fast-paced' ? 'bg-blue-100 border-4 border-blue-300' : 'bg-gray-100 border border-transparent'}
+                      ${activeCard === 'Speedrun' ? 'bg-blue-100 border-4 border-blue-300' : 'bg-gray-100 border border-transparent'}
                     `}
                   >
                     <Image
@@ -136,11 +172,13 @@ export default function SignUp() {
                       height={48}
                       priority
                     />
-                    <span className={`mt-3 font-semibold ${activeCard === 'fast-paced' ? 'text-blue-400' : 'text-gray-700'}`}>
+                    <span className={`mt-3 font-semibold ${activeCard === 'Speedrun' ? 'text-blue-400' : 'text-gray-700'}`}>
                       Speedrun
                     </span>
                   </div>
                 </div>
+
+                {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
                 {/* Sign Up Button */}
                 <button

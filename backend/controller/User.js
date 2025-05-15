@@ -6,9 +6,9 @@ const jwt = require('jsonwebtoken');
 const JWTVerify = require('../middleware/JWTVerify');
 
 const regist = asyncHandler(async (req, res) => {
-    const { email, username, dname, passwordHash } = req.body;
+    const { email, username, dname, passwordHash, prioritization} = req.body;
 
-    if (!email || !username || !dname || !passwordHash) {
+    if (!email || !username || !dname || !passwordHash || !prioritization) {
         return res.status(400).json({ message: "Mohon lengkapi seluruh box"});
     }
 
@@ -21,7 +21,7 @@ const regist = asyncHandler(async (req, res) => {
     const hashedPass = await bcrypt.hash(passwordHash, 10);
 
     const userObject = {
-        email, username, dname, passwordHash: hashedPass
+        email, username, dname, passwordHash: hashedPass, prioritization
     }
 
     const user = await User.create(userObject);
@@ -74,11 +74,22 @@ const login = asyncHandler(async (req, res) => {
     }
 });
 
+const getUserById = async (req, res) => {
+  try {
+    const userId = req.user.id; // Ambil userId dari token atau session
+    const user = await User.findById(userId); // Ambil data dari database
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
 const updateUser = asyncHandler(async (req, res) => {
-    const { username, dname, passwordHash, email } = req.body
+    const { username, dname, passwordHash, prioritization } = req.body
 
     // Confirm data 
-    if (!email || !username || !dname) {
+    if (!username || !dname) {
         return res.status(400).json({ message: 'All fields except password are required' })
     }
 
@@ -92,16 +103,16 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 
     // Check for duplicate 
-    const duplicate = await User.findOne({ username, email }).lean().exec()
+    const duplicate = await User.findOne({ username }).lean().exec()
 
     // Allow updates to the original user 
     if (duplicate && duplicate?._id.toString() !== userId) {
-        return res.status(409).json({ message: 'Duplicate username or email' })
+        return res.status(409).json({ message: 'Duplicate username' })
     }
 
     user.username = username
-    user.email = email
     user.dname = dname
+    user.prioritization = prioritization
 
     if (passwordHash) {
         // Hash password 
@@ -125,4 +136,4 @@ const logout = asyncHandler(async (req, res) => {
     return res.status(200).json({ message: 'Logout successful' });
 });
 
-module.exports = { regist, getAllUser, login, updateUser, logout};
+module.exports = { regist, getAllUser, login, updateUser, logout, getUserById};

@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         maxlength: 100
     },
+    prioritization: {
+        type: String,
+        enum: ['Leisure', 'Speedrun'],
+        default: 'Speedrun'
+    },
     createdAt: {
         type: Date,
         default: Date.now

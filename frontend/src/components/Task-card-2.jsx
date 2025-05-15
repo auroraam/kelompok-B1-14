@@ -1,21 +1,24 @@
 import Image from "next/image";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-export default function TaskCard2({ title, description, priority, imageUrl, onEdit, onDelete }) {
-	const priorityColors = {
-	  High: "bg-[var(--red-one)]",
+export default function TaskCard2({ title, description, priority, subtasks = [], difficulty, onEdit, onDelete }) {
+	const difficultyColors = {
+	  Hard: "bg-[var(--red-one)]",
 	  Medium: "bg-[var(--orange-one)]",
-	  Low: "bg-[var(--green-one)]",
+	  Easy: "bg-[var(--green-one)]",
 	};
-  
+
+	const imageUrl = "/image (8).png";
+
 	return (
-	  <div className="flex bg-white shadow-md rounded-2xl items-center gap-4 w-full max-w-4xl">
-		<div className={`w-20 h-20 relative flex items-center justify-center rounded-lg ${priorityColors[priority]}`}>
+	  <div className="flex bg-white shadow-md rounded-2xl items-center gap-4 w-full">
+		<div className={`w-20 h-20 relative flex items-center justify-center rounded-lg ${difficultyColors[difficulty]}`}>
 		  <Image src={imageUrl} alt="Task Image" width={80} height={80} className="p-2 rounded-lg h-full w-full object-cover" />
 		</div>
   
 		<div className="flex-1 p-2">
 		  <h3 className="text-xl text-black font-bold">{title}</h3>
+		  <p className="text-gray-600 text-xs font-bold">Sub-Tasks: {subtasks.length}</p>
 		  <p className="text-gray-600 text-xs text-justify">{description}</p>
 		</div>
   

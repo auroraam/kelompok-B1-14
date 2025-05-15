@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler');
 
 const createTask = asyncHandler(async (req, res) => {
     try {
-        const { title, description, deadline, difficulty, priority, status } = req.body;
+        const { title, description, deadline, difficulty, priority, subtasks = [] } = req.body;
 
         if (!title || !description || !deadline || !difficulty || !priority ) {
             return res.status(400).json({ message: 'All fields are required' });
@@ -19,7 +19,7 @@ const createTask = asyncHandler(async (req, res) => {
             deadline,
             difficulty,
             priority,
-            status
+            subtasks
         };
 
         const task = await Task.create(taskObject);
@@ -52,7 +52,17 @@ const getTaskByUserId = asyncHandler(async (req, res) => {
             return res.status(404).json({ message: 'No tasks found for this user' });
         }
 
-        res.status(200).json({ tasks });
+        const groupedTasks = {
+            High: [],
+            Medium: [],
+            Low: []
+        };
+
+        tasks.forEach(task => {
+            groupedTasks[task.priority].push(task);
+        });
+
+        res.status(200).json(groupedTasks);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching user tasks', error: error.message });
     }
@@ -77,7 +87,9 @@ const getTaskByTaskId = asyncHandler(async (req, res) => {
 const updateTask = asyncHandler(async (req, res) => {
     try {
         const { taskId } = req.query;
-        const { title, description, deadline, difficulty, priority, status } = req.body;
+        console.log('taskId:', taskId);          // <-- taruh di sini
+        console.log('body:', req.body); 
+        const { title, description, deadline, difficulty, priority, subtasks } = req.body;
 
         const task = await Task.findById(taskId);
 
@@ -90,7 +102,7 @@ const updateTask = asyncHandler(async (req, res) => {
         task.deadline = deadline || task.deadline;
         task.difficulty = difficulty || task.difficulty;
         task.priority = priority || task.priority;
-        task.status = status || task.status;
+        task.subtasks = subtasks || task.subtasks;
 
         const updatedTask = await task.save();
 
