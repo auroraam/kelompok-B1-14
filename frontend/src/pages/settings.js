@@ -1,8 +1,18 @@
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { isAuthenticated } from '../auth';
 
 export default function Home() {
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.replace('http://localhost:3000'); // redirect kalau belum login
+    }
+  }, []);
+
   const user = {
     name: "Jane Doe",
     avatarUrl: "/profileimage.png",
@@ -19,14 +29,32 @@ export default function Home() {
   // New state for active card in Task Prioritization
   const [activeCard, setActiveCard] = useState("leisure");
 
-  const handleEditClick = () => {
-    if (isEditing) {
-      // Save logic here (e.g., API call)
-      // For now, just disable editing
-      setIsEditing(false);
-    } else {
-      setIsEditing(true);
+  const fetchUserData = async (storedToken) => {
+    try {
+      const response = await axios.get("http://localhost:3500/user/id", {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+      const data = response.data; // gunakan .data, bukan .json()
+      setFormData({
+        username: data.username,
+        displayName: data.dname,
+        password: "******",
+      });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
     }
+  };
+
+  const handleEditClick = () => {
+    if (!isEditing && (!formData.username || !formData.displayName)) {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      fetchUserData(storedToken);
+    }
+  }
+  setIsEditing(true);
   };
 
   const handleCancelClick = () => {
@@ -34,13 +62,40 @@ export default function Home() {
     setIsEditing(false);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
+
+  const handleSave = async () => {
+    try {
+      const storedToken = localStorage.getItem("token");
+      setToken(storedToken);
+      const response = await axios.patch(
+        "http://localhost:3500/user",
+        {
+          username: formData.username,
+          dname: formData.displayName,
+          passwordHash: formData.password !== "******" ? formData.password : undefined,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("User updated successfully!");
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Update error:", error);
+      alert("Update failed.");
+    }
   };
+
 
   const togglePush = () => {
     setPushEnabled((prev) => !prev);
@@ -80,7 +135,7 @@ export default function Home() {
             Joined at <span className="font-bold font-['Inter']">DD/MM/YYYY</span>
           </div>
           <button
-            onClick={handleEditClick}
+            onClick={isEditing ? handleSave : handleEditClick}
             className="w-36 px-3 py-5 bg-sky-400 rounded-3xl flex justify-center items-center gap-2 text-white text-sm font-medium font-['Inter'] leading-tight"
           >
             {isEditing ? "Save" : "Edit Profile"}
@@ -130,7 +185,7 @@ export default function Home() {
                 placeholder="e.g. JohnDoe123"
                 disabled={!isEditing}
                 value={formData.username}
-                onChange={handleInputChange}
+                onChange={handleChange}
                 className={`w-full h-12 rounded-lg border px-3 font-normal font-['Inter'] leading-normal ${
                   isEditing ? "border-blue-400 text-blue-400" : "border-gray-400 text-gray-400"
                 }`}
@@ -147,7 +202,7 @@ export default function Home() {
                 placeholder="e.g. Johnny Doe"
                 disabled={!isEditing}
                 value={formData.displayName}
-                onChange={handleInputChange}
+                onChange={handleChange}
                 className={`w-full h-12 rounded-lg border px-3 font-normal font-['Inter'] leading-tight ${
                   isEditing ? "border-blue-400 text-blue-400" : "border-gray-400 text-gray-400"
                 }`}
@@ -168,7 +223,7 @@ export default function Home() {
                   name="password"
                   value={formData.password}
                   disabled={!isEditing}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   className={`w-full h-full px-3 font-normal font-['Work_Sans'] leading-normal bg-transparent ${
                     isEditing ? "text-blue-400" : "text-gray-400"
                   }`}

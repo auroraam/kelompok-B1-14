@@ -31,11 +31,10 @@ const taskSchema = new mongoose.Schema({
         enum: ['Low', 'Medium', 'High'],
         default: 'Medium'
     },
-    status: {
+    subtasks: [{
         type: String,
-        enum: ['not_started', 'in_progress', 'completed'],
-        default: 'not_started'
-    },
+        trim: true
+    }],
     createdAt: {
         type: Date,
         default: Date.now

@@ -1,15 +1,15 @@
 import { useState } from "react";
 import Image from "next/image";
 
-export default function CreateTaskModal({ isOpen, onClose }) {
+export default function CreateTaskModal({ isOpen, onClose, onSubmit }) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    dueDate: "",
-    category: "Housework",
+    deadline: "",
+    priority: "High",
     difficulty: "Hard",
-    subTasks: ["", ""], // start with two empty sub-tasks
+    subtasks: ["", ""], // start with two empty sub-tasks
   });
 
 
@@ -24,18 +24,18 @@ export default function CreateTaskModal({ isOpen, onClose }) {
   };
 
   const handleSubTaskChange = (index, value) => {
-    const newSubTasks = [...formData.subTasks];
+    const newSubTasks = [...formData.subtasks];
     newSubTasks[index] = value;
     setFormData((prev) => ({
       ...prev,
-      subTasks: newSubTasks,
+      subtasks: newSubTasks,
     }));
   };
 
   const addSubTask = () => {
     setFormData((prev) => ({
       ...prev,
-      subTasks: [...prev.subTasks, ""],
+      subtasks: [...prev.subtasks, ""],
     }));
   };
 
@@ -119,10 +119,10 @@ export default function CreateTaskModal({ isOpen, onClose }) {
                   Due Date
                 </label>
                 <input
-                  id="dueDate"
-                  name="dueDate"
+                  id="deadline"
+                  name="deadline"
                   type="date"
-                  value={formData.dueDate}
+                  value={formData.deadline}
                   onChange={handleChange}
                   className="border border-gray-400 rounded-md p-2 bg-slate-200 text-cyan-900"
                   required
@@ -131,17 +131,17 @@ export default function CreateTaskModal({ isOpen, onClose }) {
                 <fieldset>
                   <legend className="text-blue-400 font-semibold mb-1">Category</legend>
                   <div className="flex gap-4 text-cyan-900">
-                    {["School/College Work", "Housework", "Miscellaneous"].map((cat) => (
+                    {["High", "Medium", "Low"].map((cat) => (
                       <label key={cat} className="flex items-center gap-1">
                         <input
                           type="radio"
-                          name="category"
+                          name="priority"
                           value={cat}
-                          checked={formData.category === cat}
+                          checked={formData.priority === cat}
                           onChange={handleChange}
                           className="accent-cyan-900"
                         />
-                        <span className={formData.category === cat ? "text-cyan-900 font-semibold" : ""}>{cat}</span>
+                        <span className={formData.priority === cat ? "text-cyan-900 font-semibold" : ""}>{cat}</span>
                       </label>
                     ))}
                   </div>
@@ -200,15 +200,15 @@ export default function CreateTaskModal({ isOpen, onClose }) {
                   <strong>sub-tasks available, due date, and task difficulty!</strong>
                 </p>
 
-                {formData.subTasks.map((subTask, index) => (
+                {formData.subtasks.map((subtasks, index) => (
                   <div key={index}>
-                    <label className="text-blue-400 font-semibold" htmlFor={`subTask-${index}`}>
+                    <label className="text-blue-400 font-semibold" htmlFor={`subtasks-${index}`}>
                       Sub-Task {index + 1}
                     </label>
                     <input
-                      id={`subTask-${index}`}
+                      id={`subtasks-${index}`}
                       type="text"
-                      value={subTask}
+                      value={subtasks}
                       onChange={(e) => handleSubTaskChange(index, e.target.value)}
                       className="border border-gray-400 rounded-md p-2 bg-slate-200 text-cyan-900 w-full"
                       placeholder={`Enter sub-task ${index + 1}`}

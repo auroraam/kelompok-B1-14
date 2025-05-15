@@ -1,5 +1,13 @@
+import { useEffect, useState } from "react";
+
 // components/TaskDeletePopUp.jsx
-export default function TaskDeletePopUp({ isOpen, onClose, onDelete, loading, error }) {
+export default function TaskDeletePopUp({ isOpen, onClose, onDelete, loading, error, task }) {
+  const [taskId, setTaskId] =useState("");
+  useEffect(() => {
+    if(task && isOpen) {
+      setTaskId(task._id);
+    }
+  }), [task, isOpen];
   if (!isOpen) return null;
 
   return (
@@ -44,7 +52,7 @@ export default function TaskDeletePopUp({ isOpen, onClose, onDelete, loading, er
                   Cancel
                 </button>
                 <button
-                  onClick={onDelete}
+                  onClick={() => onDelete(task)}
                   className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition"
                 >
                   Delete

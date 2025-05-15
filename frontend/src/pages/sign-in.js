@@ -4,9 +4,37 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 export default function SignIn() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Kirim data login ke API route Next.js
+      const response = await axios.post('http://localhost:3500/user/login', {
+        username,
+        passwordHash: password,
+      });
+
+      // Simpan token yang diterima di localStorage
+      localStorage.setItem('userId', response.data.data.id);
+      localStorage.setItem('token', response.data.token);
+      router.push('http://localhost:3000/landing/');
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage('Terjadi kesalahan saat login.');
+      }
+    }
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -37,7 +65,7 @@ export default function SignIn() {
                 Congratulations! You are one step ahead to use our services.
               </p>
 
-              <form>
+              <form onSubmit={handleSubmit}>
                 {/* Username */}
                 <div className="mb-4">
                   <label htmlFor="username" className="block mb-2 text-blue-400 font-semibold">
@@ -47,6 +75,8 @@ export default function SignIn() {
                     id="username"
                     type="text"
                     placeholder="e.g. JohnDoe123"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-md bg-white text-cyan-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                 </div>
@@ -60,6 +90,8 @@ export default function SignIn() {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="*******"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full p-3 placeholder-gray-400 border border-gray-400 rounded-md bg-white text-cyan-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
                   <button
@@ -71,6 +103,8 @@ export default function SignIn() {
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
+
+                {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
                 {/* Sign In Button */}
                 <button

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 
 export default function Navbar({ user }) {
   // user: null or user object (e.g. { name, avatarUrl })
@@ -30,7 +31,7 @@ export default function Navbar({ user }) {
         {/* Navigation Links */}
         <div className="flex gap-5 font-semibold primary-text items-center relative">
           <Link href="/">Home</Link>
-          <Link href="/tasks">Tasks</Link>
+          <Link href="/task-user">Tasks</Link>
           <Link href="/settings">Settings</Link>
 
           {/* User Section */}

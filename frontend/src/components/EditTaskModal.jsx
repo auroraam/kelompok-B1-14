@@ -4,10 +4,11 @@ import Image from "next/image";
 export default function EditTaskModal({ isOpen, onClose, task, onSubmit }) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
+    _id: "",
     title: "",
     description: "",
-    dueDate: "",
-    category: "Housework",
+    deadline: "",
+    priority: "High",
     difficulty: "Hard",
     subTasks: ["", ""],
   });
@@ -16,12 +17,13 @@ export default function EditTaskModal({ isOpen, onClose, task, onSubmit }) {
   useEffect(() => {
     if (task && isOpen) {
       setFormData({
+        _id:task._id,
         title: task.title || "",
         description: task.description || "",
-        dueDate: task.dueDate || "",
-        category: task.category || "Housework",
+        deadline: task.deadline || "",
+        priority: task.priority || "High",
         difficulty: task.difficulty || "Hard",
-        subTasks: task.subTasks && task.subTasks.length > 0 ? task.subTasks : ["", ""],
+        subtasks: task.subtasks && task.subtasks.length > 0 ? task.subtasks : ["", ""],
       });
       setStep(1);
     }
@@ -38,18 +40,18 @@ export default function EditTaskModal({ isOpen, onClose, task, onSubmit }) {
   };
 
   const handleSubTaskChange = (index, value) => {
-    const newSubTasks = [...formData.subTasks];
+    const newSubTasks = [...formData.subtasks];
     newSubTasks[index] = value;
     setFormData((prev) => ({
       ...prev,
-      subTasks: newSubTasks,
+      subtasks: newSubTasks,
     }));
   };
 
   const addSubTask = () => {
     setFormData((prev) => ({
       ...prev,
-      subTasks: [...prev.subTasks, ""],
+      subtasks: [...prev.subtasks, ""],
     }));
   };
 
@@ -133,14 +135,14 @@ export default function EditTaskModal({ isOpen, onClose, task, onSubmit }) {
                   required
                 />
 
-                <label className="text-blue-400 font-semibold" htmlFor="dueDate">
+                <label className="text-blue-400 font-semibold" htmlFor="deadline">
                   Due Date
                 </label>
                 <input
-                  id="dueDate"
-                  name="dueDate"
+                  id="deadline"
+                  name="deadline"
                   type="date"
-                  value={formData.dueDate}
+                  value={formData.deadline}
                   onChange={handleChange}
                   className="border border-gray-400 rounded-md p-2 bg-slate-200 text-cyan-900"
                   required
@@ -151,14 +153,14 @@ export default function EditTaskModal({ isOpen, onClose, task, onSubmit }) {
                     Category
                   </legend>
                   <div className="flex gap-4 text-cyan-900">
-                    {["School/College Work", "Housework", "Miscellaneous"].map(
+                    {["High", "Medium", "Low"].map(
                       (cat) => (
                         <label key={cat} className="flex items-center gap-1">
                           <input
                             type="radio"
-                            name="category"
+                            name="priority"
                             value={cat}
-                            checked={formData.category === cat}
+                            checked={formData.priority === cat}
                             onChange={handleChange}
                             className="accent-cyan-900"
                           />
@@ -245,18 +247,18 @@ export default function EditTaskModal({ isOpen, onClose, task, onSubmit }) {
                   based on your changes.
                 </p>
 
-                {formData.subTasks.map((subTask, index) => (
+                {formData.subtasks.map((subtasks, index) => (
                   <div key={index}>
                     <label
                       className="text-blue-400 font-semibold"
-                      htmlFor={`subTask-${index}`}
+                      htmlFor={`subtasks-${index}`}
                     >
                       Sub-Task {index + 1}
                     </label>
                     <input
-                      id={`subTask-${index}`}
+                      id={`subtasks-${index}`}
                       type="text"
-                      value={subTask}
+                      value={subtasks}
                       onChange={(e) =>
                         handleSubTaskChange(index, e.target.value)
                       }
