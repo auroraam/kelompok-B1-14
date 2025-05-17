@@ -20,7 +20,7 @@ export default function EditTaskModal({ isOpen, onClose, task, onSubmit }) {
         _id:task._id,
         title: task.title || "",
         description: task.description || "",
-        deadline: task.deadline || "",
+        deadline: task.deadline ? new Date(task.deadline).toISOString().split("T")[0] : "",
         priority: task.priority || "High",
         difficulty: task.difficulty || "Hard",
         subtasks: task.subtasks && task.subtasks.length > 0 ? task.subtasks : ["", ""],

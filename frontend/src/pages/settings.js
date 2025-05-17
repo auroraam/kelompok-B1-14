@@ -83,7 +83,7 @@ export default function Home() {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${storedToken}`,
           },
         }
       );
