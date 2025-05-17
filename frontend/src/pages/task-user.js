@@ -17,18 +17,14 @@ export default function Home() {
   const router = useRouter();
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [sortBy, setSortBy] = useState("priority"); // atau "difficulty"
+
 
   // Separate state variables for create and edit modals
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [selectedSortOption, setSortSelectedOption] = useState(null);
-
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace('http://localhost:3000/tasks'); // redirect kalau belum login
-    }
-  }, []);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -131,11 +127,12 @@ export default function Home() {
     difficulty: updatedTask.difficulty,
     priority: updatedTask.priority,
     subtasks: updatedTask.subtasks,
-  },
-        {
-          
-          
-        }
+  }, {
+    headers: {
+          Authorization: `Bearer ${storedToken}`,
+          "Content-Type": "application/json",
+        },
+  }
       );
 
     const updated = response.data.task;
@@ -312,6 +309,12 @@ export default function Home() {
             onClick={() => setIsCreateModalOpen(true)}
           >
             Create A Task Now
+          </button>
+          <button
+            className="flex-1 gradient-button font-normal px-6 py-2 min-h-full"
+            onClick={() => setSortBy(sortBy === "priority" ? "difficulty" : "priority")}
+            >
+              Sort by: {sortBy === "priority" ? "Priority" : "Difficulty"}
           </button>
         </div>
 
