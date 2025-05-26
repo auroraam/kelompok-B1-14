@@ -9,13 +9,13 @@ import TaskDeletePopUp from "@/components/TaskDeletePopUp";
 import axios from "axios";
 import { isAuthenticated } from '../auth';
 import { useRouter } from "next/router";
+import TaskPopUp from '@/components/popup';
 
 export default function Home() {
   const [tasks, setTasks] = useState([]);
   // State for selected task to edit
   const [selectedTask, setSelectedTask] = useState(null);
   const router = useRouter();
-  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState("priority"); // atau "difficulty"
 
@@ -25,18 +25,32 @@ export default function Home() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [selectedSortOption, setSortSelectedOption] = useState(null);
+  const [Popup, setPopup] = useState({
+    isOpen: false,
+    status: "",
+    title: "",
+    message: "",
+  });
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-          router.replace('http://localhost:3000/tasks'); // redirect kalau belum login
-    } else{const storedToken = localStorage.getItem("token");
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
       setToken(storedToken);
-      fetchTasks(storedToken);
+    } else {
+      console.warn("Token tidak ditemukan. Redirect ke login...");
     }
   }, []);
 
+  useEffect(() => {
+    if (token) {
+      fetchTasks(token);
+    }
+  }, [token]);
+
   const fetchTasks = async (storedToken) => {
-      try {
+    setLoading(true);  
+    try {
         const response = await axios.get("http://localhost:3500/task/user", {
           headers: {
             Authorization: `Bearer ${storedToken}`,
@@ -110,6 +124,12 @@ export default function Home() {
 
   // Handle saving edited task (you can update your tasks state here)
   const handleSave = async (updatedTask) => {
+    setPopup({
+      isOpen: true,
+      status: "loading",
+      title: "Updating...",
+      message: "Please wait while we update the task.",
+    });
     try {
       const storedToken = localStorage.getItem("token");
       setToken(storedToken);
@@ -141,15 +161,36 @@ export default function Home() {
     setTasks(prev =>
       prev.map(task => (task._id === updated._id ? updated : task)));
       handleCloseEditModal();
+    
+    setPopup({
+      isOpen: true,
+      status: "success",
+      title: "Update Successful",
+      message: "Your task have been successfully updated!",
+    });
+    // Delay redirect
+    setTimeout(() => {
       router.reload();
+    }, 1500);
     } catch (error) {
-      console.error('Error updating task:', error);
+      const msg = error?.response?.data?.message || "Error.";
+      setPopup({
+        isOpen: true,
+        status: "error",
+        title: "Update Failed",
+        message: msg,
+      });
     }
   };
 
   // Handle task creation submission
   const handleTaskSubmit = async (taskData) => {
-    setTaskStatus("loading");
+    setPopup({
+      isOpen: true,
+      status: "loading",
+      title: "Creating...",
+      message: "Please wait while we create the task.",
+    });
 
     try {
       // Simulate API call delay
@@ -166,12 +207,26 @@ export default function Home() {
 
       // Add new task to tasks list (assign a new id)
       setTasks((prev) => [...prev, newTask]);
-      setTaskStatus("success");
       handleCloseCreateModal();
+
+      setPopup({
+      isOpen: true,
+      status: "success",
+      title: "Create Task Successful",
+      message: "Your task have been successfully created!",
+    });
+    // Delay redirect
+    setTimeout(() => {
       router.reload();
+    }, 1500);
     } catch (error) {
-      console.error("Error:", error);
-      setTaskStatus("error");
+      const msg = error?.response?.data?.message || "Error.";
+      setPopup({
+        isOpen: true,
+        status: "error",
+        title: "Create Task Failed",
+        message: msg,
+      });
     }
   };
 
@@ -427,6 +482,14 @@ export default function Home() {
         task={taskToDelete}
       />
       )}
+
+      <TaskPopUp
+        isOpen={Popup.isOpen}
+        status={Popup.status}
+        title={Popup.title}
+        message={Popup.message}
+        onClose={() => setPopup({ ...Popup, isOpen: false })}
+      />
     </main>
   );
 }

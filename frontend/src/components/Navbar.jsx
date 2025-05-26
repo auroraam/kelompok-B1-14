@@ -1,13 +1,57 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import axios from "axios";
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import TaskPopUp from '@/components/popup';
 
 export default function Navbar({ user }) {
   // user: null or user object (e.g. { name, avatarUrl })
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef(null);
+  const router = useRouter();
+  const [Popup, setPopup] = useState({
+    isOpen: false,
+    status: "",
+    title: "",
+    message: "",
+  });
+
+  const handleLogout = async () => {
+    setPopup({
+      isOpen: true,
+      status: "loading",
+      title: "Signing Out...",
+      message: "Please wait while we sign you out.",
+    });
+    try {
+      const response = await axios.get('http://localhost:3500/user/logout', {}, {
+        withCredentials: true, // agar cookie (token) ikut dikirim dan bisa dihapus
+      });
+
+      if (response.status === 200) {
+        localStorage.removeItem("token");
+        setPopup({
+          isOpen: true,
+          status: "success",
+          title: "Sign out successfull",
+          message: "You have been successfully signed out!",
+        });
+        setTimeout(() => {
+          router.push('http://localhost:3000/sign-in');
+        }, 1500);
+      }
+    } catch (error) {
+      const msg = error?.response?.data?.message || "Error.";
+      setPopup({
+        isOpen: true,
+        status: "error",
+        title: "Login Failed",
+        message: msg,
+      });
+    }
+  };
 
   // Close popup if clicked outside
   useEffect(() => {
@@ -79,7 +123,7 @@ export default function Navbar({ user }) {
                   <button
                     onClick={() => {
                       setIsProfileOpen(false);
-                      // Add your sign-out logic here
+                      handleLogout();
                     }}
                     className="w-full text-left px-2 py-1 hover:bg-red-100 rounded mt-2 text-red-600"
                   >
@@ -91,6 +135,13 @@ export default function Navbar({ user }) {
           )}
         </div>
       </div>
+      <TaskPopUp
+        isOpen={Popup.isOpen}
+        status={Popup.status}
+        title={Popup.title}
+        message={Popup.message}
+        onClose={() => setPopup({ ...Popup, isOpen: false })}
+      />
     </nav>
   );
 }

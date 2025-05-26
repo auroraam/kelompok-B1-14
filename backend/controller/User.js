@@ -51,6 +51,9 @@ const login = asyncHandler(async (req, res) => {
     }
 
     const user = await User.findOne({ username }).lean().exec();
+    if (!user) {
+        return res.status(400).json({ message: "Invalid credentials"});
+    }
 
     const match = await bcrypt.compare(passwordHash, user.passwordHash);
 

@@ -3,9 +3,18 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { isAuthenticated } from '../auth';
+import TaskPopUp from '@/components/popup';
+import { useRouter } from "next/router";
 
 export default function Home() {
   const [token, setToken] = useState(null);
+  const [Popup, setPopup] = useState({
+    isOpen: false,
+    status: "",
+    title: "",
+    message: "",
+  });
+  const router = useRouter();
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -88,11 +97,22 @@ export default function Home() {
         }
       );
 
-      alert("User updated successfully!");
+      setPopup({
+        isOpen: true,
+        status: "success",
+        title: "Update Successful",
+        message: "Your data has been successfully updated!",
+      });
+
       setIsEditing(false);
     } catch (error) {
-      console.error("Update error:", error);
-      alert("Update failed.");
+      const msg = error?.response?.data?.message || "Error.";
+      setPopup({
+        isOpen: true,
+        status: "error",
+        title: "Update Failed",
+        message: msg,
+      });
     }
   };
 
@@ -332,6 +352,13 @@ export default function Home() {
           <span className="font-bold">SmartSched,</span> Your Partner for Every Scheduling Needs
         </div>
       </div>
+      <TaskPopUp
+        isOpen={Popup.isOpen}
+        status={Popup.status}
+        title={Popup.title}
+        message={Popup.message}
+        onClose={() => setPopup({ ...Popup, isOpen: false })}
+      />
     </main>
   );
 }
