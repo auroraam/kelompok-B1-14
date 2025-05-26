@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import TaskPopUp from '@/components/popup';
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,24 +15,45 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
+  const [Popup, setPopup] = useState({
+    isOpen: false,
+    status: "",
+    title: "",
+    message: "",
+  });
 
   const handleSubmit = async (e) => {
       e.preventDefault();
+      setPopup({
+        isOpen: true,
+        status: "loading",
+        title: "Signing Up...",
+        message: "Please wait while we sign you up.",
+      });
       try {
         // Kirim data login ke API route Next.js
         const response = await axios.post('http://localhost:3500/user/', {
           email, username, dname, passwordHash: password, prioritization: activeCard
         });
   
-        // Simpan token yang diterima di localStorage
-        const { token } = response.data;
-        router.push('http://localhost:3000/sign-in/');
+        setPopup({
+          isOpen: true,
+          status: "success",
+          title: "Sign Up Successful",
+          message: "You have been successfully signed up!",
+        });
+
+        setTimeout(() => {
+          router.push('http://localhost:3000/sign-in');
+        }, 1500);
       } catch (error) {
-        if (error.response && error.response.data && error.response.data.message) {
-          setErrorMessage(error.response.data.message);
-        } else {
-          setErrorMessage('Terjadi kesalahan saat register.');
-        }
+        const msg = error?.response?.data?.message || "Error.";
+        setPopup({
+          isOpen: true,
+          status: "error",
+          title: "Sign Up Failed",
+          message: msg,
+        });
       }
     };
 
@@ -200,6 +222,13 @@ export default function SignUp() {
           </div>
         </div>
       </div>
+      <TaskPopUp
+        isOpen={Popup.isOpen}
+        status={Popup.status}
+        title={Popup.title}
+        message={Popup.message}
+        onClose={() => setPopup({ ...Popup, isOpen: false })}
+      />
     </div>
   );
 }

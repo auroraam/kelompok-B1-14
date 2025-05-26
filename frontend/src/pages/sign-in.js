@@ -6,16 +6,29 @@ import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import TaskPopUp from '@/components/popup';
 
 export default function SignIn() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [Popup, setPopup] = useState({
+    isOpen: false,
+    status: "",
+    title: "",
+    message: "",
+  });
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setPopup({
+      isOpen: true,
+      status: "loading",
+      title: "Signing In...",
+      message: "Please wait while we sign you in.",
+    });
     try {
       // Kirim data login ke API route Next.js
       const response = await axios.post('http://localhost:3500/user/login', {
@@ -23,16 +36,28 @@ export default function SignIn() {
         passwordHash: password,
       });
 
-      // Simpan token yang diterima di localStorage
       localStorage.setItem('userId', response.data.data.id);
       localStorage.setItem('token', response.data.token);
-      router.push('http://localhost:3000/landing/');
+
+      setPopup({
+        isOpen: true,
+        status: "success",
+        title: "Sign In Successful",
+        message: "You have been successfully signed in!",
+      });
+
+      // Delay redirect
+      setTimeout(() => {
+        router.push('http://localhost:3000/landing');
+      }, 1500);
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage('Terjadi kesalahan saat login.');
-      }
+      const msg = error?.response?.data?.message || "Error.";
+      setPopup({
+        isOpen: true,
+        status: "error",
+        title: "Sign In Failed",
+        message: msg,
+      });
     }
   };
 
@@ -126,6 +151,13 @@ export default function SignIn() {
           </div>
         </div>
       </div>
+      <TaskPopUp
+        isOpen={Popup.isOpen}
+        status={Popup.status}
+        title={Popup.title}
+        message={Popup.message}
+        onClose={() => setPopup({ ...Popup, isOpen: false })}
+      />
     </div>
   );
 }
