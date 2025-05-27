@@ -24,7 +24,7 @@ export default function Home() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
-  const [selectedSortOption, setSortSelectedOption] = useState(null);
+  const [selectedSortOption, setSortSelectedOption] = useState("asc");
   const [Popup, setPopup] = useState({
     isOpen: false,
     status: "",
@@ -74,8 +74,8 @@ export default function Home() {
     };
 
   const sortedTasks = [...tasks].sort((a, b) => {
-    const dateA = new Date(a.dueDate);
-    const dateB = new Date(b.dueDate);
+    const dateA = new Date(a.deadline);
+    const dateB = new Date(b.deadline);
     return selectedSortOption === "asc"
       ? dateA - dateB
       : selectedSortOption === "desc"
@@ -170,7 +170,6 @@ export default function Home() {
     });
     // Delay redirect
     setTimeout(() => {
-      router.reload();
     }, 1500);
     } catch (error) {
       const msg = error?.response?.data?.message || "Error.";
@@ -289,12 +288,10 @@ export default function Home() {
   };
 
   const handleOptionClick = (option) => {
+    console.log("Selected sort option:", option);
     setSortSelectedOption(option);
     setIsSortOpen(false);
-    if (onSortChange) onSortChange(option);
   };
-
-  
 
   return (
     <main className="pt-15">
@@ -383,6 +380,7 @@ export default function Home() {
               <div className="flex flex-col w-full mb-3 space-y-2">
                 {tasks
                 .filter((task) => task.priority === "High")
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline) * (selectedSortOption === "asc" ? 1 : -1))
                 .map((task) => (
                   <TaskCard2
                     key={task.id}
@@ -402,6 +400,7 @@ export default function Home() {
               <div className="flex flex-col mb-3 w-full space-y-2">
                 {tasks
                 .filter((task) => task.priority === "Medium")
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline) * (selectedSortOption === "asc" ? 1 : -1))
                 .map((task) => (
                   <TaskCard2
                     key={task.id}
@@ -421,6 +420,7 @@ export default function Home() {
               <div className="flex flex-col mb-3 w-full space-y-2">
                 {tasks
                 .filter((task) => task.priority === "Low")
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline) * (selectedSortOption === "asc" ? 1 : -1))
                 .map((task) => (
                   <TaskCard2
                     key={task.id}

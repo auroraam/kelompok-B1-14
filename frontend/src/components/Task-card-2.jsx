@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-export default function TaskCard2({ title, description, priority, subtasks = [], difficulty, onEdit, onDelete }) {
+export default function TaskCard2({ title, description, priority, subtasks = [], difficulty, deadline, onEdit, onDelete }) {
 	const difficultyColors = {
 	  Hard: "bg-[var(--red-one)]",
 	  Medium: "bg-[var(--orange-one)]",
@@ -10,14 +10,31 @@ export default function TaskCard2({ title, description, priority, subtasks = [],
 
 	const imageUrl = "/image (8).png";
 
+	const formatDate = (isoString) => {
+  		const date = new Date(isoString);
+  		const day = String(date.getDate()).padStart(2, '0');
+  		const month = String(date.getMonth() + 1).padStart(2, '0');
+  		const year = date.getFullYear();
+  		return `${day}/${month}/${year}`;
+	};
+
 	return (
 	  <div className="flex bg-white shadow-md rounded-2xl items-center gap-4 w-full">
-		<div className={`w-20 h-20 relative flex items-center justify-center rounded-lg ${difficultyColors[difficulty]}`}>
-		  <Image src={imageUrl} alt="Task Image" width={80} height={80} className="p-2 rounded-lg h-full w-full object-cover" />
-		</div>
+		<div className={`w-24 flex flex-col items-center justify-start py-1 ${difficultyColors[difficulty]} rounded-lg`}>
+  		  	<div className="w-15 h-13 rounded-lg overflow-hidden">
+  		  	  	<Image
+  		  	  	  	src={imageUrl}
+  		  	  	  	alt="Task Image"
+  		  	  	  	width={64}
+  		  	  	  	height={64}
+  		  	  	  	className="object-cover w-full h-full"
+  		  	  	/>
+  		  	</div>
+  		  	<h3 className="text-white text-sm mt-0">{difficulty}</h3>
+  		</div>
   
 		<div className="flex-1 p-2">
-		  <h3 className="text-xl text-black font-bold">{title}</h3>
+		  <h3 className="text-xl text-black font-bold">{formatDate(deadline)} — {title}</h3>
 		  <p className="text-gray-600 text-xs font-bold">Sub-Tasks: {subtasks.length}</p>
 		  <p className="text-gray-600 text-xs text-justify">{description}</p>
 		</div>
