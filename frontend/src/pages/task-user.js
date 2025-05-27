@@ -24,7 +24,7 @@ export default function Home() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
-  const [selectedSortOption, setSortSelectedOption] = useState(null);
+  const [selectedSortOption, setSortSelectedOption] = useState("asc");
   const [Popup, setPopup] = useState({
     isOpen: false,
     status: "",
@@ -32,19 +32,24 @@ export default function Home() {
     message: "",
   });
   const [token, setToken] = useState(null);
+  const [user, setUser] = useState({
+    name: "Jane Doe",
+    avatarUrl: "/profileimage.png",
+  });
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
     } else {
-      console.warn("Token tidak ditemukan. Redirect ke login...");
+      router.replace('http://localhost:3000/tasks');
     }
   }, []);
 
   useEffect(() => {
     if (token) {
       fetchTasks(token);
+      fetchUserName(token)
     }
   }, [token]);
 
@@ -73,9 +78,27 @@ export default function Home() {
       }
     };
 
+  const fetchUserName = async (storedToken) => {
+    try {
+      const response = await axios.get("http://localhost:3500/user/id", {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+      const data = response.data; // gunakan .data, bukan .json()
+
+      setUser((prevUser) => ({
+      ...prevUser,
+      name: data.dname,
+    }));
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
   const sortedTasks = [...tasks].sort((a, b) => {
-    const dateA = new Date(a.dueDate);
-    const dateB = new Date(b.dueDate);
+    const dateA = new Date(a.deadline);
+    const dateB = new Date(b.deadline);
     return selectedSortOption === "asc"
       ? dateA - dateB
       : selectedSortOption === "desc"
@@ -87,12 +110,6 @@ export default function Home() {
     High: sortedTasks.filter((task) => task.priority === "High"),
     Medium: sortedTasks.filter((task) => task.priority === "Medium"),
     Low: sortedTasks.filter((task) => task.priority === "Low"),
-  };
-
-  // User info
-  const user = {
-    name: "Jane Doe",
-    avatarUrl: "/profileimage.png",
   };
 
   // Task creation status
@@ -170,7 +187,6 @@ export default function Home() {
     });
     // Delay redirect
     setTimeout(() => {
-      router.reload();
     }, 1500);
     } catch (error) {
       const msg = error?.response?.data?.message || "Error.";
@@ -289,12 +305,10 @@ export default function Home() {
   };
 
   const handleOptionClick = (option) => {
+    console.log("Selected sort option:", option);
     setSortSelectedOption(option);
     setIsSortOpen(false);
-    if (onSortChange) onSortChange(option);
   };
-
-  
 
   return (
     <main className="pt-15">
@@ -383,6 +397,7 @@ export default function Home() {
               <div className="flex flex-col w-full mb-3 space-y-2">
                 {tasks
                 .filter((task) => task.priority === "High")
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline) * (selectedSortOption === "asc" ? 1 : -1))
                 .map((task) => (
                   <TaskCard2
                     key={task.id}
@@ -402,6 +417,7 @@ export default function Home() {
               <div className="flex flex-col mb-3 w-full space-y-2">
                 {tasks
                 .filter((task) => task.priority === "Medium")
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline) * (selectedSortOption === "asc" ? 1 : -1))
                 .map((task) => (
                   <TaskCard2
                     key={task.id}
@@ -421,6 +437,7 @@ export default function Home() {
               <div className="flex flex-col mb-3 w-full space-y-2">
                 {tasks
                 .filter((task) => task.priority === "Low")
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline) * (selectedSortOption === "asc" ? 1 : -1))
                 .map((task) => (
                   <TaskCard2
                     key={task.id}

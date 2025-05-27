@@ -106,20 +106,6 @@ export default function Navbar({ user }) {
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-blue-400 rounded-md shadow-lg p-4 text-sm z-50">
                   <p className="px-2 py-1 font-bold text-white bg-blue-400">Hello, {user.name}!</p>
-                  <Link
-                    href="/profile"
-                    className="block px-2 py-1 hover:bg-gray-100 rounded"
-                    onClick={() => setIsProfileOpen(false)}
-                  >
-                    Profile
-                  </Link>
-                  <Link
-                    href="/settings"
-                    className="block px-2 py-1 hover:bg-gray-100 rounded"
-                    onClick={() => setIsProfileOpen(false)}
-                  >
-                    Settings
-                  </Link>
                   <button
                     onClick={() => {
                       setIsProfileOpen(false);

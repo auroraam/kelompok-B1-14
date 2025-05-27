@@ -15,28 +15,55 @@ export default function Home() {
     message: "",
   });
   const router = useRouter();
+  const [user, setUser] = useState({
+    name: "Jane Doe",
+    avatarUrl: "/profileimage.png",
+  });
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace('http://localhost:3000'); // redirect kalau belum login
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      router.replace('http://localhost:3000/setting-guest');
     }
   }, []);
 
-  const user = {
-    name: "Jane Doe",
-    avatarUrl: "/profileimage.png",
-  };
+  useEffect(() => {
+    if (token) {
+      fetchUserName(token);
+    }
+  }, [token]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     displayName: "",
     password: "******",
+    prioritization: "",
   });
   const [pushEnabled, setPushEnabled] = useState(false);
 
   // New state for active card in Task Prioritization
-  const [activeCard, setActiveCard] = useState("leisure");
+  const [activeCard, setActiveCard] = useState("Leisure");
+
+  const fetchUserName = async (storedToken) => {
+    try {
+      const response = await axios.get("http://localhost:3500/user/id", {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+      const data = response.data; // gunakan .data, bukan .json()
+
+      setUser((prevUser) => ({
+      ...prevUser,
+      name: data.dname,
+    }));
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   const fetchUserData = async (storedToken) => {
     try {
@@ -50,7 +77,14 @@ export default function Home() {
         username: data.username,
         displayName: data.dname,
         password: "******",
+        prioritization: data.prioritization,
       });
+      setActiveCard(data.prioritization);
+
+      setUser((prevUser) => ({
+      ...prevUser,
+      name: data.dname,
+    }));
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -89,6 +123,7 @@ export default function Home() {
           username: formData.username,
           dname: formData.displayName,
           passwordHash: formData.password !== "******" ? formData.password : undefined,
+          prioritization: formData.prioritization,
         },
         {
           headers: {
@@ -102,6 +137,13 @@ export default function Home() {
         status: "success",
         title: "Update Successful",
         message: "Your data has been successfully updated!",
+      });
+
+      setFormData({
+        username: "",
+        displayName: "",
+        password: "******",
+        prioritization: "",
       });
 
       setIsEditing(false);
@@ -151,9 +193,9 @@ export default function Home() {
           <div className="w-56 text-sky-400 text-3xl font-bold font-sans leading-loose">
             Profile Name
           </div>
-          <div className="w-[480px] text-zinc-900 text-sm font-normal font-sans leading-tight">
+          {/* <div className="w-[480px] text-zinc-900 text-sm font-normal font-sans leading-tight">
             Joined at <span className="font-bold font-['Inter']">DD/MM/YYYY</span>
-          </div>
+          </div> */}
           <button
             onClick={isEditing ? handleSave : handleEditClick}
             className="w-36 px-3 py-5 bg-sky-400 rounded-3xl flex justify-center items-center gap-2 text-white text-sm font-medium font-['Inter'] leading-tight"
@@ -292,10 +334,13 @@ export default function Home() {
           <div className="flex gap-6">
             {/* Leisure Card */}
             <div
-              onClick={() => setActiveCard("leisure")}
+              onClick={() => {
+                setActiveCard("Leisure");
+                setFormData((prev) => ({ ...prev, prioritization: "Leisure" }));
+              }}
               className={`flex flex-col items-center justify-center w-28 h-36 rounded-lg shadow-md p-4 cursor-pointer transition-colors duration-300
                 ${
-                  activeCard === "leisure"
+                  activeCard === "Leisure"
                     ? "bg-blue-100 border-4 border-blue-300"
                     : "bg-gray-100 border border-transparent"
                 }
@@ -304,7 +349,7 @@ export default function Home() {
               <Image src="/leisure.png" alt="Leisure" width={48} height={48} priority />
               <span
                 className={`mt-3 font-semibold ${
-                  activeCard === "leisure" ? "text-blue-400" : "text-gray-700"
+                  activeCard === "Leisure" ? "text-blue-400" : "text-gray-700"
                 }`}
               >
                 Leisure
@@ -313,10 +358,13 @@ export default function Home() {
 
             {/* Fast-Paced Card */}
             <div
-              onClick={() => setActiveCard("fast-paced")}
+              onClick={() => {
+                setActiveCard("Speedrun");
+                setFormData((prev) => ({ ...prev, prioritization: "Speedrun" }));
+              }}
               className={`flex flex-col items-center justify-center w-28 h-36 rounded-lg shadow-md p-4 cursor-pointer transition-colors duration-300
                 ${
-                  activeCard === "fast-paced"
+                  activeCard === "Speedrun"
                     ? "bg-blue-100 border-4 border-blue-300"
                     : "bg-gray-100 border border-transparent"
                 }
@@ -325,7 +373,7 @@ export default function Home() {
               <Image src="/fast-paced.png" alt="Fast-Paced" width={48} height={48} priority />
               <span
                 className={`mt-3 font-semibold ${
-                  activeCard === "fast-paced" ? "text-blue-400" : "text-gray-700"
+                  activeCard === "Speedrun" ? "text-blue-400" : "text-gray-700"
                 }`}
               >
                 Speedrun
