@@ -8,7 +8,7 @@ import FeatureCard from "@/components/featureCard";
 export default function Home() {
   const [showPopup, setShowPopup] = useState(false);
   const user = {
-    name: "Jane Doe",
+    name: "Your display name",
     avatarUrl: "/profileimage.png",
   };
   const features = [
