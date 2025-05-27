@@ -10,21 +10,61 @@ import TaskDeletePopUp from "@/components/TaskDeletePopUp";
 import { useEffect } from 'react';
 import { isAuthenticated } from '../auth';
 import { useRouter } from 'next/router';
+import axios from "axios";
+import TaskPopUp from '@/components/popup';
 
 export default function Home() {
+  const [tasks, setTasks] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const router = useRouter();
+  const [token, setToken] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({
+    name: "Jane Doe",
+    avatarUrl: "/profileimage.png",
+  });
+  const [Popup, setPopup] = useState({
+    isOpen: false,
+    status: "",
+    title: "",
+    message: "",
+  });
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace('http://localhost:3000'); // redirect kalau belum login
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      router.replace('http://localhost:3000');
     }
   }, []);
 
-  const user = {
-    name: "Jane Doe",
-    avatarUrl: "/profileimage.png",
+  useEffect(() => {
+    if (token) {
+      fetchUserName(token);
+      fetchTasks(token);
+    }
+  }, [token]);
+
+  const fetchUserName = async (storedToken) => {
+    try {
+      const response = await axios.get("http://localhost:3500/user/id", {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+      const data = response.data; // gunakan .data, bukan .json()
+
+      setUser((prevUser) => ({
+      ...prevUser,
+      name: data.dname,
+    }));
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   };
+
   const features = [
     {
       imageSrc: "/ai-powered.png",
@@ -49,53 +89,112 @@ export default function Home() {
   ]
   const [selectedTask, setSelectedTask] = useState(null);
   
-	const tasks = [
-	  {
-		id: 1,
-		title: "Example Task",
-		description: "This is a sample task description.",
-		priority: "High",
-		imageUrl: "/image (8).png",
-		dueDate: "2024-05-10",
-		category: "Housework",
-		difficulty: "Hard",
-		subTasks: ["Subtask 1", "Subtask 2"],
-	  },
-	];
+	const fetchTasks = async (storedToken) => {
+    setLoading(true);
+    try {
+      const response = await axios.get("http://localhost:3500/task/user", {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+
+      const data = response.data;
+
+      // Gabungkan semua tasks
+      const allTasks = [
+        ...(data.High || []),
+        ...(data.Medium || []),
+        ...(data.Low || [])
+      ];
+
+      // Urutkan berdasarkan deadline terdekat
+      const sortedTasks = allTasks.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+
+      // Ambil 2 task dengan deadline paling dekat
+      const topTwoTasks = sortedTasks.slice(0, 2);
+
+      setTasks(topTwoTasks);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    } finally {
+      setLoading(false);
+    }
+  };  
+
   
 	const handleEditClick = (task) => {
 	  setSelectedTask(task);
-	  setIsModalOpen(true);
+	  setIsEditModalOpen(true);
 	};
   
-	const handleCloseModal = () => {
-	  setIsModalOpen(false);
+	const handleCloseEditModal = () => {
+	  setIsEditModalOpen(false);
 	  setSelectedTask(null);
 	};
   
-	const handleSave = (updatedTask) => {
-	  console.log("Save updated task:", updatedTask);
-	  // Update your tasks state here accordingly
-	  handleCloseModal();
-	};
+	const handleSave = async (updatedTask) => {
+    setPopup({
+      isOpen: true,
+      status: "loading",
+      title: "Updating...",
+      message: "Please wait while we update the task.",
+    });
+    try {
+      const storedToken = localStorage.getItem("token");
+      setToken(storedToken);
+      if (!updatedTask._id) {
+      console.error("Error: updatedTask._id is undefined!");
+      console.log(updatedTask)
+      return;
+    }
+      const response = await axios.patch(
+        `http://localhost:3500/task?taskId=${updatedTask._id}`,
+        {
+    title: updatedTask.title,
+    description: updatedTask.description,
+    deadline: updatedTask.deadline,
+    difficulty: updatedTask.difficulty,
+    priority: updatedTask.priority,
+    subtasks: updatedTask.subtasks,
+  }, {
+    headers: {
+          Authorization: `Bearer ${storedToken}`,
+          "Content-Type": "application/json",
+        },
+  }
+      );
+
+    const updated = response.data.task;
+
+    // Update task di state lokal
+    setTasks(prev =>
+      prev.map(task => (task._id === updated._id ? updated : task)));
+      handleCloseEditModal();
+    
+    setPopup({
+      isOpen: true,
+      status: "success",
+      title: "Update Successful",
+      message: "Your task have been successfully updated!",
+    });
+    // Delay redirect
+    setTimeout(() => {
+    }, 1500);
+    } catch (error) {
+      const msg = error?.response?.data?.message || "Error.";
+      setPopup({
+        isOpen: true,
+        status: "error",
+        title: "Update Failed",
+        message: msg,
+      });
+    }
+  };
 	
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [taskStatus, setTaskStatus] = useState(null); // null | "loading" | "success" | "error"
 		
 	// Simulate task creation process
-	const handleTaskSubmit = async (taskData) => {
-		setTaskStatus("loading");
-	
-		try {
-		  // Replace with your real API call
-		  await new Promise((resolve) => setTimeout(resolve, 3000));
-	
-		  setTaskStatus("success");
-		  setIsModalOpen(false);
-		} catch (error) {
-		  setTaskStatus("error");
-		}
-	  };
 	
 	  const handleCloseStatus = () => {
 		setTaskStatus(null);
@@ -124,18 +223,35 @@ export default function Home() {
     setDeleteError(false);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (deletedTask) => {
+    if (!deletedTask?._id) {
+    console.error("No task ID provided for deletion");
+    return;
+  }
     setDeleteLoading(true);
     setDeleteError(false);
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
+      const storedToken = localStorage.getItem("token");
+      setToken(storedToken);
+      if (!deletedTask._id) {
+      console.error("Error: deletedTask._id is undefined!");
+      console.log(deletedTask)
+      }
+      const response = await axios.delete(
+        `http://localhost:3500/task?taskId=${deletedTask._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       // Remove the task from the list
-      setTasks((prev) => prev.filter((t) => t.id !== taskToDelete.id));
+      setTasks((prev) => prev.filter((t) => t._id !== deletedTask._id));
 
       closeDeletePopup();
     } catch (error) {
+      console.error("Delete error:", error);
       setDeleteError(true);
       setDeleteLoading(false);
     }
@@ -213,58 +329,27 @@ export default function Home() {
             </p>
             
             <div className="flex flex-col items-center mt-3">
-              <div>
+              <div className="w-full">
                 <h3 className="bg-[var(--primary-color)] text-white rounded-full px-2 py-1 inline-block mb-2">
-                  Due Today
+                  Upcoming Deadlines
                 </h3>
-              {tasks.map((task) => (
-                              <TaskCard2
-                                key={task.id}s
-                                {...task}
-                                onEdit={() => handleEditClick(task)}
-                                onDelete={() => openDeletePopup(task)}
-                              />
-                              ))}
-                          
-                              {isModalOpen && selectedTask && (
-                              <EditTaskModal
-                                isOpen={isModalOpen}
-                                onClose={handleCloseModal}
-                                task={selectedTask}
-                                onSubmit={handleSave}
-                              />
-                  )}
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center mt-3">
-              <div>
-                <h3 className="bg-[var(--primary-color)] text-white rounded-full px-2 py-1 inline-block mb-2">
-                  Due Tomorrow
-                </h3>
-                {tasks.map((task) => (
-                              <TaskCard2
-                                key={task.id}s
-                                {...task}
-                                onEdit={() => handleEditClick(task)}
-                                onDelete={() => openDeletePopup(task)}
-                              />
-                              ))}
-                          
-                              {isModalOpen && selectedTask && (
-                              <EditTaskModal
-                                isOpen={isModalOpen}
-                                onClose={handleCloseModal}
-                                task={selectedTask}
-                                onSubmit={handleSave}
-                              />
-                  )}
+                <div className="flex flex-col w-full mb-3 space-y-2">
+                  {tasks
+                  .map((task) => (
+                    <TaskCard2
+                      key={task.id}
+                      {...task}
+                      onEdit={() => handleEditClick(task)}
+                      onDelete={() => openDeletePopup(task)}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
             <div className="mt-6 flex">
               <Link
-              href="/tasks"
+              href="/task-user"
               className="gradient-button font-normal px-6 py-2 ml-auto"
               >
               Check All of My To-Do List
@@ -348,6 +433,35 @@ export default function Home() {
           <span>SmartSched,</span> Your Partner for Every Scheduling Needs!
         </div>
       </footer>
+      {/* Edit Task Modal */}
+            {isEditModalOpen && selectedTask && (
+              <EditTaskModal
+                isOpen={isEditModalOpen}
+                onClose={handleCloseEditModal}
+                task={selectedTask}
+                onSubmit={handleSave}
+              />
+            )}
+      
+            {/* Delete Task Popup */}
+            {deletePopupOpen && taskToDelete && (
+              <TaskDeletePopUp
+              isOpen={deletePopupOpen}
+              onClose={closeDeletePopup}
+              onDelete={handleDelete}
+              loading={deleteLoading}
+              error={deleteError}
+              task={taskToDelete}
+            />
+            )}
+      
+            <TaskPopUp
+              isOpen={Popup.isOpen}
+              status={Popup.status}
+              title={Popup.title}
+              message={Popup.message}
+              onClose={() => setPopup({ ...Popup, isOpen: false })}
+            />
     </main>
   );
 }

@@ -32,19 +32,24 @@ export default function Home() {
     message: "",
   });
   const [token, setToken] = useState(null);
+  const [user, setUser] = useState({
+    name: "Jane Doe",
+    avatarUrl: "/profileimage.png",
+  });
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
     } else {
-      console.warn("Token tidak ditemukan. Redirect ke login...");
+      router.replace('http://localhost:3000/task');
     }
   }, []);
 
   useEffect(() => {
     if (token) {
       fetchTasks(token);
+      fetchUserName(token)
     }
   }, [token]);
 
@@ -73,6 +78,24 @@ export default function Home() {
       }
     };
 
+  const fetchUserName = async (storedToken) => {
+    try {
+      const response = await axios.get("http://localhost:3500/user/id", {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+      const data = response.data; // gunakan .data, bukan .json()
+
+      setUser((prevUser) => ({
+      ...prevUser,
+      name: data.dname,
+    }));
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
   const sortedTasks = [...tasks].sort((a, b) => {
     const dateA = new Date(a.deadline);
     const dateB = new Date(b.deadline);
@@ -87,12 +110,6 @@ export default function Home() {
     High: sortedTasks.filter((task) => task.priority === "High"),
     Medium: sortedTasks.filter((task) => task.priority === "Medium"),
     Low: sortedTasks.filter((task) => task.priority === "Low"),
-  };
-
-  // User info
-  const user = {
-    name: "Jane Doe",
-    avatarUrl: "/profileimage.png",
   };
 
   // Task creation status

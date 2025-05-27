@@ -15,17 +15,25 @@ export default function Home() {
     message: "",
   });
   const router = useRouter();
+  const [user, setUser] = useState({
+    name: "Jane Doe",
+    avatarUrl: "/profileimage.png",
+  });
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace('http://localhost:3000'); // redirect kalau belum login
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      router.replace('http://localhost:3000');
     }
   }, []);
 
-  const user = {
-    name: "Jane Doe",
-    avatarUrl: "/profileimage.png",
-  };
+  useEffect(() => {
+    if (token) {
+      fetchUserName(token);
+    }
+  }, [token]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -38,6 +46,24 @@ export default function Home() {
 
   // New state for active card in Task Prioritization
   const [activeCard, setActiveCard] = useState("Leisure");
+
+  const fetchUserName = async (storedToken) => {
+    try {
+      const response = await axios.get("http://localhost:3500/user/id", {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+      const data = response.data; // gunakan .data, bukan .json()
+
+      setUser((prevUser) => ({
+      ...prevUser,
+      name: data.dname,
+    }));
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   const fetchUserData = async (storedToken) => {
     try {
@@ -54,6 +80,11 @@ export default function Home() {
         prioritization: data.prioritization,
       });
       setActiveCard(data.prioritization);
+
+      setUser((prevUser) => ({
+      ...prevUser,
+      name: data.dname,
+    }));
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
