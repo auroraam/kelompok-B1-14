@@ -112,6 +112,74 @@ const updateTask = asyncHandler(async (req, res) => {
     }
 });
 
+const markTaskDone = asyncHandler(async (req, res) => {
+    try {
+        const { taskId } = req.query;
+        const { isDone } = req.body; // kirim true atau false
+
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        task.isDone = isDone;
+
+        const updatedTask = await task.save();
+        res.status(200).json({ message: 'Task status updated!', task: updatedTask });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating late tasks', error: error.message });
+    }
+});
+
+const updateLateStatus = asyncHandler(async (req, res) => {
+    try {
+        const now = new Date();
+        const tasks = await Task.find();
+
+        const updates = await Promise.all(tasks.map(async task => {
+            const wasLate = task.isLate;
+            const shouldBeLate = !task.isDone && task.deadline < now;
+
+            if (wasLate !== shouldBeLate) {
+                task.isLate = shouldBeLate;
+                return await task.save();
+            } else {
+                return null; // no need to update
+            }
+        }));
+
+        res.status(200).json({ message: 'Late statuses updated', updated: updates.filter(Boolean) });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating late statuses', error: error.message });
+    }
+});
+
+const updateTaskCategory = asyncHandler(async (req, res) => {
+    try {
+        const { taskId } = req.query;
+        const { category } = req.body; // ex: 'Cicil' atau 'Langsung'
+
+        // Validasi nilai kategori
+        const validCategories = ['Cicil', 'Langsung'];
+        if (!validCategories.includes(category)) {
+            return res.status(400).json({ message: 'Invalid category value' });
+        }
+
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        task.category = category;
+
+        const updatedTask = await task.save();
+        res.status(200).json({ message: 'Task category updated!', task: updatedTask });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating task category', error: error.message });
+    }
+});
+
+
 // DELETE TASK
 const deleteTask = asyncHandler(async (req, res) => {
     try {
@@ -130,4 +198,4 @@ const deleteTask = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { createTask, getAllTask, getTaskByTaskId, getTaskByUserId, updateTask, deleteTask };
+module.exports = { createTask, getAllTask, getTaskByTaskId, getTaskByUserId, updateTask, markTaskDone, updateLateStatus, updateTaskCategory, deleteTask };

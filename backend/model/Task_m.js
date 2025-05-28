@@ -35,6 +35,19 @@ const taskSchema = new mongoose.Schema({
         type: String,
         trim: true
     }],
+    isDone: {
+        type: Boolean,
+        default: false
+    },
+    category: {
+        type: String,
+        enum: ['Cicil', 'Langsung'],
+        default: 'Langsung'
+    },
+    isLate: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now
