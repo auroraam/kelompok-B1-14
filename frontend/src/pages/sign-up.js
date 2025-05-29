@@ -32,7 +32,7 @@ export default function SignUp() {
       });
       try {
         // Kirim data login ke API route Next.js
-        const response = await axios.post('http://localhost:3500/user/', {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/user/`, {
           email, username, dname, passwordHash: password, prioritization: activeCard
         });
   

@@ -26,7 +26,7 @@ export default function Navbar({ user }) {
       message: "Please wait while we sign you out.",
     });
     try {
-      const response = await axios.get('http://localhost:3500/user/logout', {}, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/user/logout`, {}, {
         withCredentials: true, // agar cookie (token) ikut dikirim dan bisa dihapus
       });
 
