@@ -3,11 +3,11 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3500;
 const mongoose = require('mongoose');
-const handler404 = require('./middleware/404handler');
-const handler500 = require('./middleware/500handler');
+const handler404 = require('./middleware/404Handler');
+const handler500 = require('./middleware/500Handler');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const errorHandler = require('./middleware/errorhandler');
+const errorHandler = require('./middleware/errorHandler');
 const connectDB = require('./config/db');
 
 connectDB();
