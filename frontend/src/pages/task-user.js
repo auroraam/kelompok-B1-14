@@ -3,7 +3,7 @@ import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 import TaskCard2 from "@/components/Task-card-2";
 import { useEffect, useState } from "react";
-import CreateTaskModal from "@/components/CreateTaskModal";
+import CreateTaskModal from "@/components/createTaskModal";
 import EditTaskModal from "@/components/EditTaskModal";
 import TaskDeletePopUp from "@/components/TaskDeletePopUp";
 import axios from "axios";

@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import TaskCardPopUp from "@/components/TaskCardPopUp";
+import TaskCardPopUp from "@/components/TaskCardPopup";
 import FeatureCard from "@/components/featureCard";
 import TaskCard2 from "@/components/Task-card-2";
 import EditTaskModal from "@/components/EditTaskModal";
