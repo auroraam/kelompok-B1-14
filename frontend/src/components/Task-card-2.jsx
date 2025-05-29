@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-export default function TaskCard2({ title, description, priority, subtasks = [], difficulty, deadline, onEdit, onDelete }) {
+export default function TaskCard2({ title, description, priority, subtasks = [], difficulty, deadline, onEdit, onDelete, isDone, onToggleDone }) {
 	const difficultyColors = {
 	  Hard: "bg-[var(--red-one)]",
 	  Medium: "bg-[var(--orange-one)]",
@@ -52,6 +52,16 @@ export default function TaskCard2({ title, description, priority, subtasks = [],
 			className="p-2 bg-[var(--red-one)] text-white rounded-lg hover:bg-[var(--red-two)] transition"
 		  >
 			<FaTrash size={14} />
+		  </button>
+		  <button
+		    onClick={onToggleDone}
+		    className={`px-3 py-2 rounded-lg transition text-sm font-medium ${
+    		  isDone
+    		    ? 'bg-gray-500 text-white hover:bg-gray-500'
+    		    : 'bg-green-600 text-white hover:bg-green-400'
+    		}`}
+		  >
+		    {isDone ? 'Undo Done' : 'Mark as Done'}
 		  </button>
 		</div>
 	  </div>
