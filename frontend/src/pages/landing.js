@@ -36,7 +36,7 @@ export default function Home() {
     if (storedToken) {
       setToken(storedToken);
     } else {
-      router.replace('http://localhost:3000');
+      router.replace(`${process.env.NEXT_PUBLIC_FRONTEND_BASEURL}`);
     }
   }, []);
 

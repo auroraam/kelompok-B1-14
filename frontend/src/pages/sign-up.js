@@ -44,7 +44,7 @@ export default function SignUp() {
         });
 
         setTimeout(() => {
-          router.push('http://localhost:3000/sign-in');
+          router.push(`${process.env.NEXT_PUBLIC_FRONTEND_BASEURL}/sign-in`);
         }, 1500);
       } catch (error) {
         const msg = error?.response?.data?.message || "Error.";
