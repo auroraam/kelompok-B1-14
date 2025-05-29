@@ -12,6 +12,16 @@ const connectDB = require('./config/db');
 
 connectDB();
 
+switch (process.env.NODE_ENV) {
+    case "development":
+        const { logger, logEvents } = require('./middleware/logger');
+        app.use(logger);
+        break;
+    case "production":
+      break;
+      default:
+        break;
+}
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json()); 
@@ -26,6 +36,7 @@ app.use("/task", require('./routes/taskRoute'));
 app.all('*', handler404);
 app.use(handler500);
 
+let server;
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
   server = app.listen(PORT, () => {

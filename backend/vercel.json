@@ -1,20 +1,18 @@
 {
-    "installCommand": "npm install --legacy-peer-deps",
     "version": 2,
     "builds": [
-        {
-            "src": "server.js",
-            "use": "@vercel/node"
-        },
-        {
-            "src": "src/**/*",
-            "use": "@vercel/static"
-        }
+      {
+        "src": "server.js",
+        "use": "@vercel/node"
+      }
     ],
     "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/"
+      {
+        "src": "/.*",
+        "dest": "server.js",
+        "headers": {
+          "Access-Control-Allow-Origin": "https://kelompok-b1-14-feru.vercel.app/"
         }
+      }
     ]
-}
+  }
