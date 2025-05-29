@@ -1,5 +1,6 @@
 const Task = require('../model/Task_m');
 const User = require('../model/User_m')
+const axios = require('axios');
 const asyncHandler = require('express-async-handler');
 
 const createTask = asyncHandler(async (req, res) => {
@@ -179,6 +180,39 @@ const updateTaskCategory = asyncHandler(async (req, res) => {
     }
 });
 
+const fetchPredictionFromML = asyncHandler(async (req, res) => {
+  try {
+    const tasks = taskDocs.map(task => ({
+      id: task._id.toString(),
+      nama_tugas: task.title,
+      deadline: task.deadline,
+      priority: task.priority === 'High' ? 5 : task.priority === 'Medium' ? 3 : 1,
+      difficulity: task.difficulty === 'Hard' ? 5 : task.difficulty === 'Medium' ? 3 : 1,
+      subTask: task.subtasks.length
+    })); // Array of task objects
+
+    if (!Array.isArray(tasks)) {
+      return res.status(400).json({ message: 'Tasks must be an array' });
+    }
+
+    const response = await axios.post(
+      'https://6103-34-83-173-246.ngrok-free.app/',
+      tasks,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    const predictions = response.data;
+
+    res.status(200).json({ message: 'Predictions fetched', predictions });
+  } catch (error) {
+    console.error('Error calling ML API:', error.message);
+    res.status(500).json({ message: 'Failed to fetch predictions', error: error.message });
+  }
+});
 
 // DELETE TASK
 const deleteTask = asyncHandler(async (req, res) => {
@@ -198,4 +232,4 @@ const deleteTask = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { createTask, getAllTask, getTaskByTaskId, getTaskByUserId, updateTask, markTaskDone, updateLateStatus, updateTaskCategory, deleteTask };
+module.exports = { createTask, getAllTask, getTaskByTaskId, getTaskByUserId, updateTask, markTaskDone, updateLateStatus, updateTaskCategory, fetchPredictionFromML, deleteTask };
