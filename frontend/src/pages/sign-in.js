@@ -48,7 +48,7 @@ export default function SignIn() {
 
       // Delay redirect
       setTimeout(() => {
-        router.push('http://localhost:3000/landing');
+        router.push(`${process.env.NEXT_PUBLIC_FRONTEND_BASEURL}/landing`);
       }, 1500);
     } catch (error) {
       const msg = error?.response?.data?.message || "Error.";

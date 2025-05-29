@@ -39,7 +39,7 @@ export default function Navbar({ user }) {
           message: "You have been successfully signed out!",
         });
         setTimeout(() => {
-          router.push('http://localhost:3000/sign-in');
+          router.push(`${process.env.NEXT_PUBLIC_FRONTEND_BASEURL}/sign-in`);
         }, 1500);
       }
     } catch (error) {
