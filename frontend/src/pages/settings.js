@@ -49,7 +49,7 @@ export default function Home() {
 
   const fetchUserName = async (storedToken) => {
     try {
-      const response = await axios.get("http://localhost:3500/user/id", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/user/id`, {
         headers: {
           Authorization: `Bearer ${storedToken}`,
         },
@@ -67,7 +67,7 @@ export default function Home() {
 
   const fetchUserData = async (storedToken) => {
     try {
-      const response = await axios.get("http://localhost:3500/user/id", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/user/id`, {
         headers: {
           Authorization: `Bearer ${storedToken}`,
         },
@@ -118,7 +118,7 @@ export default function Home() {
       const storedToken = localStorage.getItem("token");
       setToken(storedToken);
       const response = await axios.patch(
-        "http://localhost:3500/user",
+        `${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/user`,
         {
           username: formData.username,
           dname: formData.displayName,

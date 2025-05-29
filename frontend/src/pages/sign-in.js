@@ -31,7 +31,7 @@ export default function SignIn() {
     });
     try {
       // Kirim data login ke API route Next.js
-      const response = await axios.post('http://localhost:3500/user/login', {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/user/login`, {
         username,
         passwordHash: password,
       });

@@ -49,7 +49,7 @@ export default function Home() {
 
   const fetchUserName = async (storedToken) => {
     try {
-      const response = await axios.get("http://localhost:3500/user/id", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/user/id`, {
         headers: {
           Authorization: `Bearer ${storedToken}`,
         },
@@ -92,7 +92,7 @@ export default function Home() {
 	const fetchTasks = async (storedToken) => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3500/task/user", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/task/user`, {
         headers: {
           Authorization: `Bearer ${storedToken}`,
         },
@@ -148,7 +148,7 @@ export default function Home() {
       return;
     }
       const response = await axios.patch(
-        `http://localhost:3500/task?taskId=${updatedTask._id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/task?taskId=${updatedTask._id}`,
         {
     title: updatedTask.title,
     description: updatedTask.description,
@@ -238,7 +238,7 @@ export default function Home() {
       console.log(deletedTask)
       }
       const response = await axios.delete(
-        `http://localhost:3500/task?taskId=${deletedTask._id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_BASEURL}/task?taskId=${deletedTask._id}`,
         {
           headers: {
             Authorization: `Bearer ${storedToken}`,
