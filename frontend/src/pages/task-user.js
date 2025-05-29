@@ -36,6 +36,8 @@ export default function Home() {
     name: "Jane Doe",
     avatarUrl: "/profileimage.png",
   });
+  const [showHiddenTasks, setShowHiddenTasks] = useState(false);
+  const [showDoneTask, setShowDoneTask] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -48,13 +50,37 @@ export default function Home() {
 
   useEffect(() => {
     if (token) {
-      fetchTasks(token);
-      fetchUserName(token)
+      updateLateStatus(token).then(() => {
+        fetchTasks(token);
+        fetchUserName(token)
+      });
     }
   }, [token]);
 
+  const updateLateStatus = async (storedToken) => {
+    try {
+      const response = await axios.patch("http://localhost:3500/task/late", {}, {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+
+      console.log("Late status update result:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating late status:", error);
+      throw error;
+    }
+  };
+
   const fetchTasks = async (storedToken) => {
-    setLoading(true);  
+    setLoading(true); 
+    setPopup({
+      isOpen: true,
+      status: "loading",
+      title: "Loading...",
+      message: "Please wait.",
+    }); 
     try {
         const response = await axios.get("http://localhost:3500/task/user", {
           headers: {
@@ -62,6 +88,7 @@ export default function Home() {
           },
         }); // Sesuaikan dengan route kamu
         const data = response.data;
+        setPopup({isOpen: false})
 
         // Jika data bentuknya dikelompokkan berdasarkan priority
         const allTasks = [
@@ -199,6 +226,42 @@ export default function Home() {
     }
   };
 
+  const handleToggleDone = async (doneTask, currentIsDone) => {
+    try {
+      const storedToken = localStorage.getItem("token");
+      setToken(storedToken);
+      const response = await axios.patch(
+        `http://localhost:3500/task/done?taskId=${doneTask._id}`,
+        { isDone: !currentIsDone },
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        }
+      );
+
+      const updated = response.data.task;
+
+      setTasks(prev =>
+      prev.map(task => (task._id === updated._id ? updated : task)));
+
+      setPopup({
+        isOpen: true,
+        status: "success",
+        title: "Mark Done Successful",
+        message: "Your task have been successfully marked as done!",
+      });
+    } catch (error) {
+      const msg = error?.response?.data?.message || "Error.";
+      setPopup({
+        isOpen: true,
+        status: "error",
+        title: "Mark Failed",
+        message: msg,
+      });
+    }
+  };
+
   // Handle task creation submission
   const handleTaskSubmit = async (taskData) => {
     setPopup({
@@ -310,6 +373,93 @@ export default function Home() {
     setIsSortOpen(false);
   };
 
+  const renderTaskSection = (priority, colorClass, label) => {
+    const filteredTasks = tasks
+      .filter((task) => task.priority === priority && !task.isDone && !task.isLate);
+
+    if (filteredTasks.length === 0) return null;
+
+    return (
+      <div className="w-full">
+        <h3 className={`bg-[var(${colorClass})] text-white rounded-full px-3 py-1 inline-block mb-3 ${priority !== "High" ? "mt-2" : ""}`}>
+          {label}
+        </h3>
+
+        <div className="flex flex-col mb-3 w-full space-y-2">
+          {filteredTasks
+            .sort((a, b) => new Date(a.deadline) - new Date(b.deadline) * (selectedSortOption === "asc" ? 1 : -1))
+            .map((task) => (
+              <TaskCard2
+                key={task.id}
+                {...task}
+                onEdit={() => handleEditClick(task)}
+                onDelete={() => openDeletePopup(task)}
+                onToggleDone={() => handleToggleDone(task, task.isDone)}
+              />
+            ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderHiddenTasksSection = () => {
+    const filteredTasks = tasks.filter((task) => task.isLate && !task.isDone);
+
+    if (filteredTasks.length === 0) return null;
+
+    return (
+      <div className="w-full">
+        <h3 className="bg-gray-600 text-white rounded-full px-3 py-1 inline-block mb-3">
+          Hidden Tasks (Late & Not Done)
+        </h3>
+        <div className="flex flex-col mb-3 w-full space-y-2">
+          {filteredTasks
+            .sort((a, b) =>
+              (selectedSortOption === "asc" ? 1 : -1) * (new Date(a.deadline) - new Date(b.deadline))
+            )
+            .map((task) => (
+              <TaskCard2
+                key={task.id}
+                {...task}
+                onEdit={() => handleEditClick(task)}
+                onDelete={() => openDeletePopup(task)}
+                onToggleDone={() => handleToggleDone(task, task.isDone)}
+              />
+            ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderDoneTasksSection = () => {
+    const filteredTasks = tasks.filter((task) => task.isDone);
+
+    if (filteredTasks.length === 0) return null;
+
+    return (
+      <div className="w-full">
+        <h3 className="bg-blue-500 text-white rounded-full px-3 py-1 inline-block mb-3">
+          Completed Tasks
+        </h3>
+        <div className="flex flex-col mb-3 w-full space-y-2">
+          {filteredTasks
+            .sort((a, b) =>
+              (selectedSortOption === "asc" ? 1 : -1) * (new Date(a.deadline) - new Date(b.deadline))
+            )
+            .map((task) => (
+              <TaskCard2
+                key={task.id}
+                {...task}
+                onEdit={() => handleEditClick(task)}
+                onDelete={() => openDeletePopup(task)}
+                onToggleDone={() => handleToggleDone(task, task.isDone)}
+              />
+            ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <main className="pt-15">
       <Navbar user={user} />
@@ -333,7 +483,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col items-center justify-center bg-white p-5">
-        <div className="flex flex-wrap items-center justify-center gap-4 w-full max-w-4xl mb-5">
+        <div className="flex flex-wrap items-center justify-center gap-4 w-full max-w-6xl mb-5">
           <div className="relative inline-block text-left flex-1">
             {/* Dropdown trigger */}
             <div
@@ -385,69 +535,27 @@ export default function Home() {
             >
               Sort by: {sortBy === "priority" ? "Priority" : "Difficulty"}
           </button>
+          <button
+            className="flex-1 gradient-button font-normal px-6 py-2 min-h-full"
+            onClick={() => setShowDoneTask(!showDoneTask)}
+          >
+            {showDoneTask ? "Hide Done Tasks" : "Show Done Tasks"}
+          </button>
+          <button
+            className="flex-1 bg-[var(--red-one)] text-white rounded-full hover:bg-[var(--red-two)] transition font-normal px-6 py-2 min-h-full"
+            onClick={() => setShowHiddenTasks(!showHiddenTasks)}
+          >
+            {showHiddenTasks ? "Hide Hidden Tasks" : "Show Hidden Tasks"}
+          </button>
         </div>
 
         <div>
           <div className="flex flex-col w-full mt-4">
-            <div className="w-full">
-              <h3 className="bg-[var(--red-one)] text-white rounded-full px-3 py-1 inline-block mb-3">
-                Urgent-Level Tasks
-              </h3>
-
-              <div className="flex flex-col w-full mb-3 space-y-2">
-                {tasks
-                .filter((task) => task.priority === "High")
-                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline) * (selectedSortOption === "asc" ? 1 : -1))
-                .map((task) => (
-                  <TaskCard2
-                    key={task.id}
-                    {...task}
-                    onEdit={() => handleEditClick(task)}
-                    onDelete={() => openDeletePopup(task)}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="w-full">
-              <h3 className="bg-[var(--orange-one)] text-white rounded-full px-3 py-1 inline-block mb-3 mt-2">
-                Moderate-Level Tasks
-              </h3>
-
-              <div className="flex flex-col mb-3 w-full space-y-2">
-                {tasks
-                .filter((task) => task.priority === "Medium")
-                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline) * (selectedSortOption === "asc" ? 1 : -1))
-                .map((task) => (
-                  <TaskCard2
-                    key={task.id}
-                    {...task}
-                    onEdit={() => handleEditClick(task)}
-                    onDelete={() => openDeletePopup(task)}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="w-full">
-              <h3 className="bg-[var(--green-one)] text-white rounded-full px-3 py-1 inline-block mb-3 mt-2">
-                Chill-Level Tasks
-              </h3>
-
-              <div className="flex flex-col mb-3 w-full space-y-2">
-                {tasks
-                .filter((task) => task.priority === "Low")
-                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline) * (selectedSortOption === "asc" ? 1 : -1))
-                .map((task) => (
-                  <TaskCard2
-                    key={task.id}
-                    {...task}
-                    onEdit={() => handleEditClick(task)}
-                    onDelete={() => openDeletePopup(task)}
-                  />
-                ))}
-              </div>
-            </div>
+            {renderTaskSection("High", "--red-one", "Urgent-Level Tasks")}
+            {renderTaskSection("Medium", "--orange-one", "Moderate-Level Tasks")}
+            {renderTaskSection("Low", "--green-one", "Chill-Level Tasks")}
+            {showDoneTask && renderDoneTasksSection()}
+            {showHiddenTasks && renderHiddenTasksSection()}
           </div>
         </div>
       </div>

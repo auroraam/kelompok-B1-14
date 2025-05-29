@@ -55,6 +55,11 @@ export default function EditTaskModal({ isOpen, onClose, task, onSubmit }) {
     }));
   };
 
+  const removeSubTask = (index) => {
+    const updatedSubtasks = formData.subtasks.filter((_, i) => i !== index);
+    setFormData({ ...formData, subtasks: updatedSubtasks });
+  };
+
   const handleNext = (e) => {
     e.preventDefault();
     setStep(2);
@@ -266,6 +271,15 @@ export default function EditTaskModal({ isOpen, onClose, task, onSubmit }) {
                       placeholder={`Enter sub-task ${index + 1}`}
                       required
                     />
+                    {formData.subtasks.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeSubTask(index)}
+                        className="text-red-500 hover:text-red-700 text-sm underline"
+                      >
+                        Delete Sub-Task?
+                      </button>
+                    )}
                   </div>
                 ))}
 
