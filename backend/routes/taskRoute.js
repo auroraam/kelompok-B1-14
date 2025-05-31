@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {createTask, getAllTask, getTaskByTaskId, getTaskByUserId, updateTask, markTaskDone, updateLateStatus, updateTaskCategory, fetchPredictionFromML, deleteTask} = require('../controller/Task');
+const {createTask, getAllTask, getTaskByTaskId, getTaskByUserId, updateTask, markTaskDone, updateLateStatus, updateTaskCategory, deleteTask} = require('../controller/Task');
 const {verifyToken} = require('../middleware/JWTVerify');
 router.route('/')
     .get(verifyToken,  getAllTask)
@@ -11,8 +11,6 @@ router.route('/')
 router.get('/user', verifyToken, getTaskByUserId);
 
 router.get('/task', verifyToken, getTaskByTaskId);
-
-router.post('/ai', fetchPredictionFromML);
 
 router.patch('/done', verifyToken, markTaskDone);
 
